@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio Pro Web Video Editor</title>
+    <title>Web Studio Video Editor</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -38,34 +38,14 @@
         }
     </script>
     <style>
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #181B24;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #3F475E;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #6366F1;
-        }
-        .canvas-container {
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
-        }
-        .ruler-ticks {
-            background-image: repeating-linear-gradient(90deg, #3F475E 0, #3F475E 1px, transparent 0, transparent 10px);
-        }
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #181B24; }
+        ::-webkit-scrollbar-thumb { background: #3F475E; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6366F1; }
+        .canvas-container { box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7); }
+        .ruler-ticks { background-image: repeating-linear-gradient(90deg, #3F475E 0, #3F475E 1px, transparent 0, transparent 10px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-dark-900 text-gray-200 font-sans h-screen flex flex-col overflow-hidden select-none">
@@ -78,12 +58,12 @@
             </div>
             <div>
                 <h1 class="font-bold text-white text-sm md:text-base tracking-wide flex items-center gap-1.5 whitespace-nowrap">
-                    Studio Pro <span class="hidden sm:inline-block text-[10px] bg-brand-500/20 text-brand-500 border border-brand-500/30 px-2 py-0.5 rounded-full font-normal">Web Edition</span>
+                    Web Studio <span class="hidden sm:inline-block text-[10px] bg-brand-500/20 text-brand-500 border border-brand-500/30 px-2 py-0.5 rounded-full font-normal">Web Edition</span>
                 </h1>
             </div>
         </div>
 
-        <!-- Undo / Redo & Controls -->
+        <!-- Undo / Redo -->
         <div class="flex items-center space-x-1.5 md:space-x-2">
             <button id="undoBtn" class="bg-dark-700 hover:bg-dark-600 disabled:opacity-40 text-gray-300 text-xs px-2.5 py-1.5 rounded-lg border border-dark-600 transition flex items-center gap-1" title="실행 취소 (Ctrl+Z)">
                 <i class="fa-solid fa-rotate-left"></i> <span class="hidden md:inline">실행 취소</span>
@@ -95,7 +75,6 @@
 
         <!-- Project Controls & Actions -->
         <div class="flex items-center space-x-2 md:space-x-3 overflow-x-auto no-scrollbar">
-            <!-- Aspect Ratio Selector -->
             <div class="flex items-center bg-dark-700 rounded-lg p-1 border border-dark-600 shrink-0">
                 <span class="text-[11px] text-gray-400 px-1.5 font-medium whitespace-nowrap">비율</span>
                 <select id="aspectRatioSelect" class="bg-dark-800 text-[11px] md:text-xs text-white px-1.5 py-1 rounded border border-dark-600 focus:outline-none focus:border-brand-500">
@@ -106,16 +85,6 @@
                 </select>
             </div>
 
-            <!-- Project File IO -->
-            <button id="exportProjectBtn" class="bg-dark-700 hover:bg-dark-600 text-[11px] md:text-xs px-2.5 py-1.5 rounded-lg border border-dark-600 flex items-center gap-1.5 transition shrink-0 whitespace-nowrap">
-                <i class="fa-solid fa-download text-gray-400"></i> <span class="hidden sm:inline">프로젝트</span> 저장
-            </button>
-            <label class="bg-dark-700 hover:bg-dark-600 text-[11px] md:text-xs px-2.5 py-1.5 rounded-lg border border-dark-600 cursor-pointer flex items-center gap-1.5 transition shrink-0 whitespace-nowrap">
-                <i class="fa-solid fa-upload text-gray-400"></i> 불러오기
-                <input type="file" id="importProjectInput" accept=".json" class="hidden">
-            </label>
-
-            <!-- Export Video Button -->
             <button id="openExportModalBtn" class="bg-brand-600 hover:bg-brand-500 text-white text-[11px] md:text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-lg shadow-brand-600/20 transition shrink-0 whitespace-nowrap">
                 <i class="fa-solid fa-file-video"></i> 내보내기
             </button>
@@ -125,9 +94,8 @@
     <!-- Main Workspace -->
     <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
         
-        <!-- Left Tools Sidebar Tabs -->
+        <!-- Left Tools Sidebar -->
         <aside class="w-full md:w-80 lg:w-96 bg-dark-800 border-r border-dark-700 flex flex-col shrink-0 z-10 max-h-64 md:max-h-none overflow-hidden">
-            <!-- Sidebar Navigation Tabs -->
             <div class="flex border-b border-dark-700 bg-dark-900/50 overflow-x-auto no-scrollbar shrink-0">
                 <button data-tab="subtitles" class="tab-btn flex-1 min-w-[75px] px-2 py-2.5 text-[11px] sm:text-xs font-semibold border-b-2 border-brand-500 text-brand-500 flex items-center justify-center gap-1.5 whitespace-nowrap">
                     <i class="fa-solid fa-closed-captioning text-xs sm:text-sm"></i> 자막/텍스트
@@ -135,27 +103,17 @@
                 <button data-tab="filters" class="tab-btn flex-1 min-w-[75px] px-2 py-2.5 text-[11px] sm:text-xs font-semibold border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex items-center justify-center gap-1.5 whitespace-nowrap">
                     <i class="fa-solid fa-sliders text-xs sm:text-sm"></i> 필터/변환
                 </button>
-                <button data-tab="audio" class="tab-btn flex-1 min-w-[75px] px-2 py-2.5 text-[11px] sm:text-xs font-semibold border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex items-center justify-center gap-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-music text-xs sm:text-sm"></i> 오디오/BGM
-                </button>
-                <button data-tab="overlay" class="tab-btn flex-1 min-w-[75px] px-2 py-2.5 text-[11px] sm:text-xs font-semibold border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex items-center justify-center gap-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-image text-xs sm:text-sm"></i> 오버레이
-                </button>
             </div>
 
-            <!-- Tab Contents -->
             <div class="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4">
-                
-                <!-- 1. Subtitles Tab -->
+                <!-- Subtitles Tab -->
                 <div id="tab-subtitles" class="tab-content space-y-4">
                     <div class="bg-dark-700/50 p-3 rounded-xl border border-dark-600/50 space-y-3">
                         <h3 class="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center justify-between">
                             <span>자막 추가 / 편집</span>
-                            <span class="text-[10px] text-gray-500 font-normal">캔버스 직접 드래그 가능</span>
                         </h3>
                         <textarea id="subTextInput" rows="2" placeholder="자막 내용을 입력하세요..." class="w-full bg-dark-900 text-sm text-white p-2.5 rounded-lg border border-dark-600 focus:outline-none focus:border-brand-500 resize-none"></textarea>
                         
-                        <!-- Subtitle Timings -->
                         <div class="grid grid-cols-2 gap-2 text-xs">
                             <div>
                                 <label class="text-gray-400 block mb-1">시작 시간 (초)</label>
@@ -167,45 +125,11 @@
                             </div>
                         </div>
 
-                        <!-- Subtitle Custom Style Options -->
-                        <div class="space-y-2 pt-2 border-t border-dark-600/50">
-                            <div class="grid grid-cols-2 gap-2">
-                                <div>
-                                    <label class="text-[11px] text-gray-400 block mb-1">폰트</label>
-                                    <select id="subFontFamily" class="w-full bg-dark-900 text-xs text-white p-1.5 rounded border border-dark-600">
-                                        <option value="Noto Sans KR">기본 (Noto Sans)</option>
-                                        <option value="Gowun Dodum">고운돋움 (손글씨)</option>
-                                        <option value="Sunflower">해바라기 (제목용)</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="text-[11px] text-gray-400 block mb-1">크기 (px)</label>
-                                    <input type="number" id="subFontSize" value="32" min="12" max="120" class="w-full bg-dark-900 text-xs text-white p-1.5 rounded border border-dark-600 text-center">
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-3 gap-2 pt-1">
-                                <div>
-                                    <label class="text-[10px] text-gray-400 block mb-0.5">글자색</label>
-                                    <input type="color" id="subTextColor" value="#FFFFFF" class="w-full h-8 bg-dark-900 rounded border border-dark-600 cursor-pointer">
-                                </div>
-                                <div>
-                                    <label class="text-[10px] text-gray-400 block mb-0.5">외곽선</label>
-                                    <input type="color" id="subStrokeColor" value="#000000" class="w-full h-8 bg-dark-900 rounded border border-dark-600 cursor-pointer">
-                                </div>
-                                <div>
-                                    <label class="text-[10px] text-gray-400 block mb-0.5">배경색</label>
-                                    <input type="color" id="subBgColor" value="#000000" class="w-full h-8 bg-dark-900 rounded border border-dark-600 cursor-pointer">
-                                </div>
-                            </div>
-                        </div>
-
                         <button id="addSubtitleBtn" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-semibold py-2 rounded-lg text-xs transition flex items-center justify-center gap-1.5">
                             <i class="fa-solid fa-plus"></i> 자막 등록
                         </button>
                     </div>
 
-                    <!-- Subtitle List -->
                     <div class="space-y-2">
                         <div class="flex items-center justify-between text-xs font-semibold text-gray-400 px-1">
                             <span>등록된 자막 목록</span>
@@ -217,7 +141,7 @@
                     </div>
                 </div>
 
-                <!-- 2. Filters & Transform Tab -->
+                <!-- Filters Tab -->
                 <div id="tab-filters" class="tab-content hidden space-y-4">
                     <div class="bg-dark-700/50 p-3 rounded-xl border border-dark-600/50 space-y-3">
                         <h3 class="text-xs font-bold text-gray-300 uppercase tracking-wider">비디오 색상 / 필터</h3>
@@ -236,140 +160,32 @@
                                 </div>
                                 <input type="range" id="filterContrast" min="0" max="200" value="100" class="w-full accent-brand-500 h-1.5 bg-dark-900 rounded-lg cursor-pointer">
                             </div>
-                            <div>
-                                <div class="flex justify-between text-gray-400 mb-1">
-                                    <span>채도 (Saturate)</span>
-                                    <span id="valSaturate">100%</span>
-                                </div>
-                                <input type="range" id="filterSaturate" min="0" max="200" value="100" class="w-full accent-brand-500 h-1.5 bg-dark-900 rounded-lg cursor-pointer">
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-gray-400 mb-1">
-                                    <span>흑백 (Grayscale)</span>
-                                    <span id="valGrayscale">0%</span>
-                                </div>
-                                <input type="range" id="filterGrayscale" min="0" max="100" value="0" class="w-full accent-brand-500 h-1.5 bg-dark-900 rounded-lg cursor-pointer">
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-gray-400 mb-1">
-                                    <span>블러 (Blur)</span>
-                                    <span id="valBlur">0px</span>
-                                </div>
-                                <input type="range" id="filterBlur" min="0" max="20" value="0" class="w-full accent-brand-500 h-1.5 bg-dark-900 rounded-lg cursor-pointer">
-                            </div>
-                        </div>
-                        <button id="resetFiltersBtn" class="w-full bg-dark-700 hover:bg-dark-600 text-gray-300 py-1.5 rounded-lg text-xs transition">
-                            필터 초기화
-                        </button>
-                    </div>
-
-                    <div class="bg-dark-700/50 p-3 rounded-xl border border-dark-600/50 space-y-3">
-                        <h3 class="text-xs font-bold text-gray-300 uppercase tracking-wider">회전 / 반전 / 속도</h3>
-                        <div class="grid grid-cols-2 gap-2 text-xs">
-                            <button id="rotateBtn" class="bg-dark-900 hover:bg-dark-600 p-2 rounded-lg border border-dark-600 flex items-center justify-center gap-1.5">
-                                <i class="fa-solid fa-rotate-right"></i> 90도 회전
-                            </button>
-                            <button id="flipHBtn" class="bg-dark-900 hover:bg-dark-600 p-2 rounded-lg border border-dark-600 flex items-center justify-center gap-1.5">
-                                <i class="fa-solid fa-arrows-left-right"></i> 좌우 반전
-                            </button>
-                        </div>
-                        <div>
-                            <label class="text-xs text-gray-400 block mb-1">재생 속도 (배속)</label>
-                            <select id="speedSelect" class="w-full bg-dark-900 text-xs text-white p-2 rounded-lg border border-dark-600">
-                                <option value="0.25">0.25x (매우 느리게)</option>
-                                <option value="0.5">0.5x (느리게)</option>
-                                <option value="1.0" selected>1.0x (일반)</option>
-                                <option value="1.25">1.25x (빠르게)</option>
-                                <option value="1.5">1.5x (더 빠르게)</option>
-                                <option value="2.0">2.0x (2배속)</option>
-                            </select>
                         </div>
                     </div>
                 </div>
-
-                <!-- 3. Audio & BGM Tab -->
-                <div id="tab-audio" class="tab-content hidden space-y-4">
-                    <div class="bg-dark-700/50 p-3 rounded-xl border border-dark-600/50 space-y-3">
-                        <h3 class="text-xs font-bold text-gray-300 uppercase tracking-wider">배경음악 (BGM) 추가</h3>
-                        <input type="file" id="bgmFileInput" accept="audio/*" class="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-600 file:text-white hover:file:bg-brand-500 cursor-pointer">
-                        
-                        <div class="space-y-3 pt-2">
-                            <div>
-                                <div class="flex justify-between text-xs text-gray-400 mb-1">
-                                    <span>비디오 원본 음량</span>
-                                    <span id="valVideoVol">100%</span>
-                                </div>
-                                <input type="range" id="videoVolume" min="0" max="100" value="100" class="w-full accent-brand-500 h-1.5 bg-dark-900 rounded-lg cursor-pointer">
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-xs text-gray-400 mb-1">
-                                    <span>배경음악 (BGM) 음량</span>
-                                    <span id="valBgmVol">50%</span>
-                                </div>
-                                <input type="range" id="bgmVolume" min="0" max="100" value="50" class="w-full accent-brand-500 h-1.5 bg-dark-900 rounded-lg cursor-pointer">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 4. Overlay & Watermark Tab -->
-                <div id="tab-overlay" class="tab-content hidden space-y-4">
-                    <div class="bg-dark-700/50 p-3 rounded-xl border border-dark-600/50 space-y-3">
-                        <h3 class="text-xs font-bold text-gray-300 uppercase tracking-wider">로고 / 스티커 오버레이</h3>
-                        <input type="file" id="overlayFileInput" accept="image/*" class="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-600 file:text-white hover:file:bg-brand-500 cursor-pointer">
-                        
-                        <div id="overlaySettings" class="hidden space-y-2 pt-2 text-xs">
-                            <div>
-                                <label class="text-gray-400 block mb-1">이미지 크기</label>
-                                <input type="range" id="overlayScale" min="20" max="300" value="100" class="w-full accent-brand-500 h-1.5 bg-dark-900 rounded-lg cursor-pointer">
-                            </div>
-                            <button id="removeOverlayBtn" class="w-full bg-red-500/20 text-red-400 hover:bg-red-500/30 py-1.5 rounded-lg text-xs transition border border-red-500/30">
-                                오버레이 이미지 삭제
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </aside>
 
-        <!-- Center Player & Preview Section -->
+        <!-- Center Player & Preview -->
         <main class="flex-1 flex flex-col bg-dark-900 relative overflow-hidden">
-            
             <div id="dropZone" class="flex-1 flex items-center justify-center p-3 sm:p-6 relative overflow-hidden min-h-[250px]">
-                
-                <div id="dropZoneNotice" class="absolute inset-0 bg-dark-900/90 border-2 border-dashed border-brand-500/50 rounded-2xl m-6 flex flex-col items-center justify-center z-10 hidden transition">
-                    <i class="fa-solid fa-cloud-arrow-up text-5xl text-brand-500 mb-3 animate-bounce"></i>
-                    <p class="text-base font-bold text-white">동영상 파일을 여기에 끌어다 놓으세요</p>
-                    <p class="text-xs text-gray-400 mt-1">MP4, WebM, MOV 포맷 지원</p>
-                </div>
-
                 <div id="emptyState" class="flex flex-col items-center justify-center text-center p-6 sm:p-8 border-2 border-dashed border-dark-700 rounded-2xl bg-dark-800/30 max-w-md">
                     <div class="w-12 h-12 sm:w-16 sm:h-16 bg-dark-700 rounded-full flex items-center justify-center text-brand-500 text-xl sm:text-2xl mb-3 sm:mb-4">
                         <i class="fa-solid fa-file-video"></i>
                     </div>
                     <h2 class="text-base sm:text-lg font-bold text-white mb-1">편집할 동영상을 불러오세요</h2>
-                    <p class="text-xs text-gray-400 mb-4">컴퓨터에 저장된 비디오 파일을 선택하거나 이 영역으로 직접 끌어다 놓으세요.</p>
-                    <label class="bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl cursor-pointer transition shadow-lg shadow-brand-600/20">
+                    <label class="bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl cursor-pointer transition mt-2 shadow-lg shadow-brand-600/20">
                         비디오 파일 선택
                         <input type="file" id="videoFileInput" accept="video/*" class="hidden">
                     </label>
                 </div>
 
-                <!-- Main Interactive Video Preview Canvas -->
                 <div id="canvasWrapper" class="relative hidden canvas-container rounded-lg overflow-hidden border border-dark-700 max-w-full max-h-full flex items-center justify-center">
                     <canvas id="mainCanvas" class="block bg-black cursor-crosshair max-w-full max-h-full"></canvas>
-                    
-                    <div class="absolute top-3 right-3 flex items-center space-x-2">
-                        <button id="fullscreenBtn" title="전체화면" class="bg-dark-900/80 hover:bg-dark-900 text-white w-8 h-8 rounded-lg flex items-center justify-center backdrop-blur text-xs transition border border-white/10">
-                            <i class="fa-solid fa-expand"></i>
-                        </button>
-                    </div>
                 </div>
-
             </div>
 
-            <!-- Player Quick Controls Bar -->
+            <!-- Controls Bar -->
             <div id="playerControlBar" class="h-12 bg-dark-800 border-t border-dark-700 px-3 sm:px-6 flex items-center justify-between shrink-0 hidden gap-2 overflow-x-auto no-scrollbar">
                 <div class="flex items-center space-x-3 shrink-0">
                     <button id="playPauseBtn" class="text-brand-500 hover:text-brand-400 text-base sm:text-lg transition">
@@ -380,26 +196,19 @@
 
                 <div class="flex items-center space-x-2 shrink-0">
                     <button id="splitVideoBtn" class="bg-dark-700 hover:bg-dark-600 text-xs text-white px-2.5 py-1.5 rounded-lg border border-dark-600 flex items-center gap-1.5 transition whitespace-nowrap">
-                        <i class="fa-solid fa-scissors text-brand-500"></i> <span class="hidden sm:inline">현재 위치</span> 컷 분할
+                        <i class="fa-solid fa-scissors text-brand-500"></i> 현재 위치 컷 분할
                     </button>
-                    <div class="h-4 w-px bg-dark-700 mx-0.5"></div>
-                    <span class="text-xs text-gray-400 hidden sm:inline">구간:</span>
-                    <input type="number" id="trimStart" value="0" step="0.1" min="0" class="w-12 sm:w-14 bg-dark-900 text-xs text-white p-1 rounded border border-dark-600 text-center">
-                    <span class="text-xs text-gray-500">~</span>
-                    <input type="number" id="trimEnd" value="0" step="0.1" min="0" class="w-12 sm:w-14 bg-dark-900 text-xs text-white p-1 rounded border border-dark-600 text-center">
-                    <span class="text-xs text-gray-400">초</span>
+                    <button id="deleteClipBtn" disabled class="bg-red-500/20 hover:bg-red-500/30 text-red-400 disabled:opacity-40 text-xs px-2.5 py-1.5 rounded-lg border border-red-500/30 flex items-center gap-1.5 transition whitespace-nowrap">
+                        <i class="fa-solid fa-trash-can"></i> 선택 클립 삭제
+                    </button>
                 </div>
             </div>
 
-            <!-- Bottom NLE Timeline Editor Area -->
+            <!-- Timeline -->
             <div id="timelineContainer" class="h-40 sm:h-48 bg-dark-800 border-t border-dark-700 flex flex-col shrink-0 hidden relative">
                 <div class="h-8 bg-dark-900/60 border-b border-dark-700 px-3 sm:px-4 flex items-center justify-between text-xs text-gray-400">
-                    <div class="flex items-center space-x-3">
-                        <span class="font-semibold text-gray-300 text-xs">타임라인</span>
-                    </div>
-                    <div class="text-[10px] sm:text-[11px] text-gray-500 truncate max-w-[200px] sm:max-w-none">
-                        단축키: Space(재생) / ← →(1초 이동) / Ctrl+Z(되돌리기) / Delete(자막 삭제)
-                    </div>
+                    <span class="font-semibold text-gray-300 text-xs">타임라인</span>
+                    <span class="text-[10px] sm:text-[11px] text-gray-500">클립 클릭: 선택 | Del: 선택 클립 삭제</span>
                 </div>
 
                 <div class="flex-1 overflow-x-auto overflow-y-hidden relative p-2" id="timelineScrollArea">
@@ -410,32 +219,20 @@
                     </div>
 
                     <div class="space-y-1.5 text-xs font-medium">
-                        <div class="h-8 sm:h-9 bg-dark-700/60 rounded-md relative flex items-center border border-dark-600/50" id="videoTrackRow">
-                            <span class="absolute left-2 z-10 text-[10px] bg-dark-900/80 px-1.5 py-0.5 rounded text-gray-300">비디오</span>
-                            <div id="videoTrackClip" class="absolute top-1 bottom-1 bg-brand-600/40 border border-brand-500 rounded flex items-center px-2 text-[11px] text-brand-200 overflow-hidden whitespace-nowrap">
-                                메인 비디오 클립
-                            </div>
+                        <div class="h-10 bg-dark-700/60 rounded-md relative border border-dark-600/50 overflow-hidden" id="videoTrackRow">
+                            <div id="videoClipsContainer" class="absolute inset-0"></div>
                         </div>
-
-                        <div class="h-7 sm:h-8 bg-dark-700/40 rounded-md relative flex items-center border border-dark-600/30" id="audioTrackRow">
-                            <span class="absolute left-2 z-10 text-[10px] bg-dark-900/80 px-1.5 py-0.5 rounded text-emerald-400">오디오 BGM</span>
-                            <div id="audioTrackClip" class="absolute top-1 bottom-1 bg-emerald-600/30 border border-emerald-500/50 rounded flex items-center px-2 text-[10px] text-emerald-200 hidden">
-                                배경음악 트랙
-                            </div>
-                        </div>
-
-                        <div class="h-7 sm:h-8 bg-dark-700/40 rounded-md relative flex items-center border border-dark-600/30" id="subTrackRow">
+                        <div class="h-7 bg-dark-700/40 rounded-md relative flex items-center border border-dark-600/30">
                             <span class="absolute left-2 z-10 text-[10px] bg-dark-900/80 px-1.5 py-0.5 rounded text-amber-400">자막</span>
                             <div id="subtitleClipsContainer" class="absolute inset-0"></div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </main>
     </div>
 
-    <!-- Export Settings Modal -->
+    <!-- Export Modal -->
     <div id="exportModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-dark-800 border border-dark-700 rounded-2xl w-full max-w-md p-5 sm:p-6 space-y-5 shadow-2xl">
             <div class="flex items-center justify-between border-b border-dark-700 pb-3">
@@ -449,8 +246,9 @@
                 <div>
                     <label class="text-gray-300 block mb-1 font-semibold">내보내기 포맷</label>
                     <select id="exportFormat" class="w-full bg-dark-900 text-white p-2.5 rounded-lg border border-dark-600 focus:outline-none focus:border-brand-500">
-                        <option value="webm">WebM (기본 권장 고화질)</option>
-                        <option value="mp4">MP4 (브라우저 호환 인코딩)</option>
+                        <!-- MP4 기본 선택 -->
+                        <option value="mp4" selected>MP4 (기본 권장 / 브라우저 호환)</option>
+                        <option value="webm">WebM (고화질)</option>
                     </select>
                 </div>
 
@@ -475,34 +273,24 @@
     </div>
 
     <video id="hiddenVideo" class="hidden" playsinline></video>
-    <audio id="hiddenAudio" class="hidden"></audio>
 
     <script>
-        // State Management & History Stack
+        // State Management & Multi-Clip Data
         const state = {
             videoFile: null,
             videoDuration: 0,
-            currentTime: 0,
             isPlaying: false,
             aspectRatio: '16:9',
             canvasWidth: 1280,
             canvasHeight: 720,
             
-            trimStart: 0,
-            trimEnd: 0,
-            rotation: 0,
-            flipH: false,
-            playbackRate: 1.0,
-            filters: { brightness: 100, contrast: 100, saturate: 100, grayscale: 0, blur: 0 },
+            // 다중 클립 분할 관리 배열
+            clips: [], // { id, start, end }
+            selectedClipId: null,
 
+            filters: { brightness: 100, contrast: 100 },
             subtitles: [],
             selectedSubId: null,
-
-            videoVolume: 1.0,
-            bgmVolume: 0.5,
-            overlayImg: null,
-            overlayPos: { x: 50, y: 50, width: 150, height: 150 },
-            
             isExporting: false
         };
 
@@ -510,26 +298,16 @@
         let historyIndex = -1;
 
         function pushState() {
-            if (historyIndex < historyStack.length - 1) {
-                historyStack.splice(historyIndex + 1);
-            }
+            if (historyIndex < historyStack.length - 1) historyStack.splice(historyIndex + 1);
             const snap = {
                 aspectRatio: state.aspectRatio,
-                trimStart: state.trimStart,
-                trimEnd: state.trimEnd,
-                rotation: state.rotation,
-                flipH: state.flipH,
-                playbackRate: state.playbackRate,
+                clips: JSON.parse(JSON.stringify(state.clips)),
                 filters: { ...state.filters },
-                subtitles: JSON.parse(JSON.stringify(state.subtitles)),
-                overlayPos: { ...state.overlayPos },
-                videoVolume: state.videoVolume,
-                bgmVolume: state.bgmVolume
+                subtitles: JSON.parse(JSON.stringify(state.subtitles))
             };
             historyStack.push(snap);
             historyIndex = historyStack.length - 1;
             updateUndoRedoUI();
-            saveLocalStorage();
         }
 
         function updateUndoRedoUI() {
@@ -553,16 +331,10 @@
 
         function applyStateSnapshot(snap) {
             state.aspectRatio = snap.aspectRatio;
-            state.trimStart = snap.trimStart;
-            state.trimEnd = snap.trimEnd;
-            state.rotation = snap.rotation;
-            state.flipH = snap.flipH;
-            state.playbackRate = snap.playbackRate;
+            state.clips = JSON.parse(JSON.stringify(snap.clips));
             state.filters = { ...snap.filters };
             state.subtitles = JSON.parse(JSON.stringify(snap.subtitles));
-            state.overlayPos = { ...snap.overlayPos };
-            state.videoVolume = snap.videoVolume;
-            state.bgmVolume = snap.bgmVolume;
+            state.selectedClipId = null;
 
             updateCanvasDimensions();
             renderSubtitlesList();
@@ -571,18 +343,9 @@
             updateUndoRedoUI();
         }
 
-        function saveLocalStorage() {
-            localStorage.setItem('studio_pro_project', JSON.stringify({
-                aspectRatio: state.aspectRatio,
-                subtitles: state.subtitles,
-                filters: state.filters
-            }));
-        }
-
-        // DOM References
+        // DOM Elements
         const videoInput = document.getElementById('videoFileInput');
         const videoEl = document.getElementById('hiddenVideo');
-        const audioEl = document.getElementById('hiddenAudio');
         const canvas = document.getElementById('mainCanvas');
         const ctx = canvas.getContext('2d');
         const canvasWrapper = document.getElementById('canvasWrapper');
@@ -593,11 +356,11 @@
         const timeDisplay = document.getElementById('timeDisplay');
         const playhead = document.getElementById('playhead');
         const timelineRuler = document.getElementById('timelineRuler');
+        const deleteClipBtn = document.getElementById('deleteClipBtn');
 
-        // Init App & Window Resizing
         window.addEventListener('resize', () => { if (state.videoFile) updateCanvasDimensions(); });
 
-        // Tab Navigation
+        // Tabs
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.tab-btn').forEach(b => {
@@ -612,38 +375,22 @@
             });
         });
 
-        // Drag and Drop & Video Loader
-        const dropZone = document.getElementById('dropZone');
-        const dropZoneNotice = document.getElementById('dropZoneNotice');
-
-        ['dragenter', 'dragover'].forEach(eName => {
-            dropZone.addEventListener(eName, (e) => { e.preventDefault(); dropZoneNotice.classList.remove('hidden'); });
-        });
-        ['dragleave', 'drop'].forEach(eName => {
-            dropZone.addEventListener(eName, (e) => { e.preventDefault(); dropZoneNotice.classList.add('hidden'); });
-        });
-        dropZone.addEventListener('drop', (e) => {
-            const files = e.dataTransfer.files;
-            if (files.length > 0 && files[0].type.startsWith('video/')) loadVideoFile(files[0]);
-        });
+        // File Loader
         videoInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) loadVideoFile(e.target.files[0]);
         });
 
         function loadVideoFile(file) {
             state.videoFile = file;
-            const url = URL.createObjectURL(file);
-            videoEl.src = url;
+            videoEl.src = URL.createObjectURL(file);
             videoEl.load();
 
             videoEl.onloadedmetadata = () => {
                 state.videoDuration = videoEl.duration;
-                state.trimStart = 0;
-                state.trimEnd = videoEl.duration;
-                
-                document.getElementById('trimStart').value = 0;
-                document.getElementById('trimEnd').value = videoEl.duration.toFixed(1);
-                
+                // 초기 전체 영역을 단일 클립으로 등록
+                state.clips = [{ id: Date.now(), start: 0, end: videoEl.duration }];
+                state.selectedClipId = null;
+
                 updateCanvasDimensions();
                 emptyState.classList.add('hidden');
                 canvasWrapper.classList.remove('hidden');
@@ -655,13 +402,6 @@
                 renderCanvasFrame();
             };
         }
-
-        // Aspect Ratio
-        document.getElementById('aspectRatioSelect').addEventListener('change', (e) => {
-            state.aspectRatio = e.target.value;
-            updateCanvasDimensions();
-            pushState();
-        });
 
         function updateCanvasDimensions() {
             let baseW = 1280, baseH = 720;
@@ -683,97 +423,37 @@
             canvas.style.height = `${Math.max(150, baseH * scale)}px`;
         }
 
-        // Main Canvas Render Loop & Interactive Drag
-        let activeDragTarget = null;
-        let dragOffset = { x: 0, y: 0 };
-        let showSnapLine = false;
-
-        canvas.addEventListener('mousedown', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            const mouseX = (e.clientX - rect.left) * scaleX;
-            const mouseY = (e.clientY - rect.top) * scaleY;
-
-            // Check Subtitle Click
-            const activeSub = state.subtitles.find(s => videoEl.currentTime >= s.start && videoEl.currentTime <= s.end && Math.abs(mouseX - s.x) < 100 && Math.abs(mouseY - s.y) < 30);
-            if (activeSub) {
-                activeDragTarget = { type: 'sub', obj: activeSub };
-                dragOffset = { x: mouseX - activeSub.x, y: mouseY - activeSub.y };
-                state.selectedSubId = activeSub.id;
-                renderSubtitlesList();
+        // Render Frame & Play Loop
+        function renderCanvasFrame() {
+            if (state.clips.length === 0) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
                 return;
             }
 
-            // Check Overlay Click
-            if (state.overlayImg) {
-                const { x, y, width, height } = state.overlayPos;
-                if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height) {
-                    activeDragTarget = { type: 'overlay', obj: state.overlayPos };
-                    dragOffset = { x: mouseX - x, y: mouseY - y };
+            // 현재 재생 위치가 삭제된 구간(빈 공간)인지 체크하고 다음 클립으로 점프
+            let currentClip = state.clips.find(c => videoEl.currentTime >= c.start && videoEl.currentTime < c.end);
+            if (!currentClip && state.isPlaying) {
+                let nextClip = state.clips.find(c => c.start > videoEl.currentTime);
+                if (nextClip) {
+                    videoEl.currentTime = nextClip.start;
+                } else {
+                    // 영상의 끝에 다다르면 재생 정지 또는 처음 클립으로 이동
+                    videoEl.currentTime = state.clips[0].start;
+                    togglePlay();
                 }
             }
-        });
 
-        window.addEventListener('mousemove', (e) => {
-            if (!activeDragTarget) return;
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            let mouseX = (e.clientX - rect.left) * scaleX;
-            let mouseY = (e.clientY - rect.top) * scaleY;
-
-            let newX = mouseX - dragOffset.x;
-            let newY = mouseY - dragOffset.y;
-
-            // Snapping Guide
-            showSnapLine = false;
-            if (Math.abs(newX - canvas.width / 2) < 15) {
-                newX = canvas.width / 2;
-                showSnapLine = true;
-            }
-
-            if (activeDragTarget.type === 'sub') {
-                activeDragTarget.obj.x = newX;
-                activeDragTarget.obj.y = newY;
-            } else if (activeDragTarget.type === 'overlay') {
-                activeDragTarget.obj.x = newX;
-                activeDragTarget.obj.y = newY;
-            }
-            renderCanvasFrame();
-        });
-
-        window.addEventListener('mouseup', () => {
-            if (activeDragTarget) {
-                activeDragTarget = null;
-                showSnapLine = false;
-                pushState();
-                renderCanvasFrame();
-            }
-        });
-
-        function renderCanvasFrame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             if (videoEl.readyState >= 2) {
                 ctx.save();
-                ctx.translate(canvas.width / 2, canvas.height / 2);
-                ctx.rotate((state.rotation * Math.PI) / 180);
-                ctx.scale(state.flipH ? -1 : 1, 1);
-
-                ctx.filter = `brightness(${state.filters.brightness}%) contrast(${state.filters.contrast}%) saturate(${state.filters.saturate}%) grayscale(${state.filters.grayscale}%) blur(${state.filters.blur}px)`;
+                ctx.filter = `brightness(${state.filters.brightness}%) contrast(${state.filters.contrast}%)`;
 
                 const vRatio = videoEl.videoWidth / videoEl.videoHeight;
                 let drawW = canvas.width, drawH = canvas.width / vRatio;
                 if (drawH < canvas.height) { drawH = canvas.height; drawW = canvas.height * vRatio; }
-                ctx.drawImage(videoEl, -drawW / 2, -drawH / 2, drawW, drawH);
+                ctx.drawImage(videoEl, (canvas.width - drawW) / 2, (canvas.height - drawH) / 2, drawW, drawH);
                 ctx.restore();
-            }
-
-            // Draw Overlay
-            if (state.overlayImg) {
-                const { x, y, width, height } = state.overlayPos;
-                ctx.drawImage(state.overlayImg, x, y, width, height);
             }
 
             // Draw Subtitles
@@ -781,57 +461,22 @@
             state.subtitles.forEach(sub => {
                 if (currentTime >= sub.start && currentTime <= sub.end) {
                     ctx.save();
-                    ctx.font = `${sub.fontSize}px "${sub.fontFamily}"`;
+                    ctx.font = `32px "Noto Sans KR"`;
                     ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-
-                    const textMetrics = ctx.measureText(sub.text);
-                    const bgWidth = textMetrics.width + 24;
-                    const bgHeight = sub.fontSize * 1.4;
-
-                    if (sub.bgColor !== 'transparent') {
-                        ctx.fillStyle = sub.bgColor;
-                        ctx.fillRect(sub.x - bgWidth / 2, sub.y - bgHeight / 2, bgWidth, bgHeight);
-                    }
-
-                    if (sub.strokeColor) {
-                        ctx.strokeStyle = sub.strokeColor;
-                        ctx.lineWidth = 4;
-                        ctx.strokeText(sub.text, sub.x, sub.y);
-                    }
-
-                    ctx.fillStyle = sub.textColor;
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.strokeStyle = '#000000';
+                    ctx.lineWidth = 4;
+                    ctx.strokeText(sub.text, sub.x, sub.y);
                     ctx.fillText(sub.text, sub.x, sub.y);
-
-                    if (sub.id === state.selectedSubId) {
-                        ctx.strokeStyle = '#6366F1';
-                        ctx.lineWidth = 2;
-                        ctx.strokeRect(sub.x - bgWidth / 2 - 4, sub.y - bgHeight / 2 - 4, bgWidth + 8, bgHeight + 8);
-                    }
-
                     ctx.restore();
                 }
             });
 
-            // Draw Snap Line
-            if (showSnapLine) {
-                ctx.strokeStyle = '#EF4444';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(canvas.width / 2, 0);
-                ctx.lineTo(canvas.width / 2, canvas.height);
-                ctx.stroke();
-            }
-
-            // Update Time Playhead
+            // Update Timeline UI
             if (state.videoDuration > 0) {
                 const progress = (videoEl.currentTime / state.videoDuration) * 100;
                 playhead.style.left = `${progress}%`;
                 timeDisplay.textContent = `${formatTime(videoEl.currentTime)} / ${formatTime(state.videoDuration)}`;
-            }
-
-            if (videoEl.currentTime >= state.trimEnd && state.isPlaying) {
-                videoEl.currentTime = state.trimStart;
             }
 
             if (state.isPlaying && !state.isExporting) {
@@ -839,151 +484,142 @@
             }
         }
 
-        // Playback Control
+        // Playback Logic
         playPauseBtn.addEventListener('click', togglePlay);
         function togglePlay() {
+            if (state.clips.length === 0) return;
+
             if (videoEl.paused) {
                 videoEl.play();
-                if (audioEl.src) audioEl.play();
                 state.isPlaying = true;
                 playPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
                 requestAnimationFrame(renderCanvasFrame);
             } else {
                 videoEl.pause();
-                if (audioEl.src) audioEl.pause();
                 state.isPlaying = false;
                 playPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
             }
         }
 
-        // Subtitles Logic
-        document.getElementById('addSubtitleBtn').addEventListener('click', () => {
-            const text = document.getElementById('subTextInput').value.trim();
-            if (!text) return;
+        // --- Multi-Clip Split & Delete Implementation ---
+        
+        // 컷 분할 (Split)
+        document.getElementById('splitVideoBtn').addEventListener('click', splitCurrentClip);
+        function splitCurrentClip() {
+            const currentTime = videoEl.currentTime;
+            const targetIndex = state.clips.findIndex(c => currentTime > c.start && currentTime < c.end);
 
-            const newSub = {
-                id: Date.now(),
-                text: text,
-                start: parseFloat(document.getElementById('subStartInput').value) || 0,
-                end: parseFloat(document.getElementById('subEndInput').value) || 5,
-                fontFamily: document.getElementById('subFontFamily').value,
-                fontSize: parseInt(document.getElementById('subFontSize').value) || 32,
-                textColor: document.getElementById('subTextColor').value,
-                strokeColor: document.getElementById('subStrokeColor').value,
-                bgColor: document.getElementById('subBgColor').value,
-                x: state.canvasWidth / 2,
-                y: state.canvasHeight - 80
-            };
+            if (targetIndex !== -1) {
+                const target = state.clips[targetIndex];
+                const clip1 = { id: Date.now(), start: target.start, end: currentTime };
+                const clip2 = { id: Date.now() + 1, start: currentTime, end: target.end };
 
-            state.subtitles.push(newSub);
-            document.getElementById('subTextInput').value = '';
-            pushState();
-            renderSubtitlesList();
-            updateTimelineClips();
-            renderCanvasFrame();
-        });
+                state.clips.splice(targetIndex, 1, clip1, clip2);
+                state.selectedClipId = clip2.id; // 분할 후 뒤쪽 클립 선택
 
-        function renderSubtitlesList() {
-            const listEl = document.getElementById('subtitlesList');
-            document.getElementById('subCountBadge').textContent = `${state.subtitles.length}개`;
-            
-            if (state.subtitles.length === 0) {
-                listEl.innerHTML = `<p class="text-xs text-gray-500 text-center py-4">등록된 자막이 없습니다.</p>`;
-                return;
+                pushState();
+                updateTimelineClips();
+                renderCanvasFrame();
             }
-
-            listEl.innerHTML = state.subtitles.map(sub => `
-                <div class="bg-dark-900/80 p-2 rounded-lg border ${sub.id === state.selectedSubId ? 'border-brand-500' : 'border-dark-600'} flex items-center justify-between text-xs cursor-pointer" onclick="selectSubtitle(${sub.id})">
-                    <div class="truncate max-w-[170px]">
-                        <p class="text-white font-medium truncate">${sub.text}</p>
-                        <p class="text-[10px] text-gray-400">${sub.start}s ~ ${sub.end}s</p>
-                    </div>
-                    <button onclick="deleteSubtitle(event, ${sub.id})" class="text-red-400 hover:text-red-300 p-1">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </button>
-                </div>
-            `).join('');
         }
 
-        window.selectSubtitle = function(id) {
-            state.selectedSubId = id;
-            renderSubtitlesList();
-            renderCanvasFrame();
-        };
+        // 클립 삭제 (Delete)
+        deleteClipBtn.addEventListener('click', deleteSelectedClip);
+        function deleteSelectedClip() {
+            if (!state.selectedClipId) return;
 
-        window.deleteSubtitle = function(e, id) {
-            e.stopPropagation();
-            state.subtitles = state.subtitles.filter(s => s.id !== id);
-            pushState();
-            renderSubtitlesList();
-            updateTimelineClips();
-            renderCanvasFrame();
-        };
+            state.clips = state.clips.filter(c => c.id !== state.selectedClipId);
+            state.selectedClipId = null;
 
-        // Split Video Implementation
-        document.getElementById('splitVideoBtn').addEventListener('click', () => {
-            const splitTime = videoEl.currentTime;
-            state.trimStart = splitTime;
-            document.getElementById('trimStart').value = splitTime.toFixed(1);
             pushState();
             updateTimelineClips();
             renderCanvasFrame();
-        });
+        }
 
-        // Timeline Render
+        // Timeline Clips Render & Select
         function updateTimelineClips() {
-            if (!state.videoDuration) return;
+            const container = document.getElementById('videoClipsContainer');
+            deleteClipBtn.disabled = !state.selectedClipId;
 
-            const videoClip = document.getElementById('videoTrackClip');
-            const trimStartPct = (state.trimStart / state.videoDuration) * 100;
-            const trimWidthPct = ((state.trimEnd - state.trimStart) / state.videoDuration) * 100;
-            videoClip.style.left = `${trimStartPct}%`;
-            videoClip.style.width = `${trimWidthPct}%`;
+            container.innerHTML = state.clips.map(clip => {
+                const left = (clip.start / state.videoDuration) * 100;
+                const width = ((clip.end - clip.start) / state.videoDuration) * 100;
+                const isSelected = clip.id === state.selectedClipId;
 
-            const subContainer = document.getElementById('subtitleClipsContainer');
-            subContainer.innerHTML = state.subtitles.map(sub => {
-                const left = (sub.start / state.videoDuration) * 100;
-                const width = ((sub.end - sub.start) / state.videoDuration) * 100;
-                return `<div class="absolute top-1 bottom-1 bg-amber-500/40 border border-amber-400 rounded text-[10px] text-amber-200 px-1 truncate flex items-center cursor-move" style="left: ${left}%; width: ${width}%;">${sub.text}</div>`;
+                return `
+                    <div onclick="selectClip(event, ${clip.id})" 
+                         class="absolute top-1 bottom-1 rounded border cursor-pointer flex items-center justify-between px-2 text-[10px] text-white transition ${isSelected ? 'bg-brand-600 border-white ring-2 ring-brand-500 z-10' : 'bg-brand-600/50 border-brand-400/50 hover:bg-brand-600/80'}" 
+                         style="left: ${left}%; width: ${width}%;">
+                        <span class="truncate"><i class="fa-solid fa-film"></i> ${clip.start.toFixed(1)}s~${clip.end.toFixed(1)}s</span>
+                    </div>
+                `;
             }).join('');
         }
+
+        window.selectClip = function(e, id) {
+            e.stopPropagation();
+            state.selectedClipId = id;
+            updateTimelineClips();
+        };
 
         timelineRuler.addEventListener('click', (e) => {
             const rect = timelineRuler.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
             const pct = clickX / rect.width;
             videoEl.currentTime = pct * state.videoDuration;
-            if (audioEl.src) audioEl.currentTime = videoEl.currentTime;
             renderCanvasFrame();
         });
 
-        // Filters
-        ['brightness', 'contrast', 'saturate', 'grayscale', 'blur'].forEach(f => {
-            const input = document.getElementById(`filter${f.charAt(0).toUpperCase() + f.slice(1)}`);
-            input.addEventListener('change', (e) => {
-                state.filters[f] = e.target.value;
-                document.getElementById(`val${f.charAt(0).toUpperCase() + f.slice(1)}`).textContent = `${e.target.value}${f === 'blur' ? 'px' : '%'}`;
-                pushState();
-                renderCanvasFrame();
+        // Subtitles
+        document.getElementById('addSubtitleBtn').addEventListener('click', () => {
+            const text = document.getElementById('subTextInput').value.trim();
+            if (!text) return;
+
+            state.subtitles.push({
+                id: Date.now(),
+                text: text,
+                start: parseFloat(document.getElementById('subStartInput').value) || 0,
+                end: parseFloat(document.getElementById('subEndInput').value) || 5,
+                x: state.canvasWidth / 2,
+                y: state.canvasHeight - 80
             });
+
+            document.getElementById('subTextInput').value = '';
+            pushState();
+            renderSubtitlesList();
+            renderCanvasFrame();
         });
 
-        // Undo/Redo Controls
+        function renderSubtitlesList() {
+            const listEl = document.getElementById('subtitlesList');
+            document.getElementById('subCountBadge').textContent = `${state.subtitles.length}개`;
+            if (state.subtitles.length === 0) {
+                listEl.innerHTML = `<p class="text-xs text-gray-500 text-center py-4">등록된 자막이 없습니다.</p>`;
+                return;
+            }
+            listEl.innerHTML = state.subtitles.map(sub => `
+                <div class="bg-dark-900/80 p-2 rounded-lg border border-dark-600 flex items-center justify-between text-xs">
+                    <p class="text-white truncate">${sub.text} (${sub.start}s~${sub.end}s)</p>
+                </div>
+            `).join('');
+        }
+
+        // Undo/Redo & Key Shortcuts
         document.getElementById('undoBtn').addEventListener('click', undo);
         document.getElementById('redoBtn').addEventListener('click', redo);
 
-        // Keyboard Shortcuts
         window.addEventListener('keydown', (e) => {
             if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
 
             if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
-            else if (e.code === 'ArrowLeft') { videoEl.currentTime = Math.max(0, videoEl.currentTime - 1); renderCanvasFrame(); }
-            else if (e.code === 'ArrowRight') { videoEl.currentTime = Math.min(state.videoDuration, videoEl.currentTime + 1); renderCanvasFrame(); }
+            else if (e.code === 'Delete' || e.code === 'Backspace') { 
+                if (state.selectedClipId) { e.preventDefault(); deleteSelectedClip(); }
+            }
             else if (e.ctrlKey && e.code === 'KeyZ') { e.preventDefault(); undo(); }
             else if (e.ctrlKey && e.code === 'KeyY') { e.preventDefault(); redo(); }
         });
 
-        // --- Real Video Export System (MediaRecorder) ---
+        // Export System (MP4 Primary Default)
         const exportModal = document.getElementById('exportModal');
         document.getElementById('openExportModalBtn').addEventListener('click', () => exportModal.classList.remove('hidden'));
         document.getElementById('closeExportModalBtn').addEventListener('click', () => exportModal.classList.add('hidden'));
@@ -992,8 +628,13 @@
         document.getElementById('startExportBtn').addEventListener('click', startExportingVideo);
 
         async function startExportingVideo() {
+            if (state.clips.length === 0) return;
+
             state.isExporting = true;
             if (state.isPlaying) togglePlay();
+
+            const format = document.getElementById('exportFormat').value; // 'mp4' or 'webm'
+            const mimeType = format === 'mp4' ? 'video/mp4' : 'video/webm;codecs=vp9';
 
             const progressWrapper = document.getElementById('exportProgressWrapper');
             const progressBar = document.getElementById('exportProgressBar');
@@ -1001,23 +642,29 @@
             const statusText = document.getElementById('exportStatusText');
 
             progressWrapper.classList.remove('hidden');
-            statusText.textContent = '비디오 인코딩 시작...';
+            statusText.textContent = 'MP4 인코딩 및 내보내기 준비 중...';
 
             const stream = canvas.captureStream(30);
             const recordedChunks = [];
-
-            const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9' });
+            
+            let mediaRecorder;
+            try {
+                mediaRecorder = new MediaRecorder(stream, { mimeType: mimeType });
+            } catch (err) {
+                // 특정 브라우저에서 mp4 mimeType 미지원 시 webm으로 자동 폴백
+                mediaRecorder = new MediaRecorder(stream);
+            }
 
             mediaRecorder.ondataavailable = (e) => {
                 if (e.data.size > 0) recordedChunks.push(e.data);
             };
 
             mediaRecorder.onstop = () => {
-                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const blob = new Blob(recordedChunks, { type: format === 'mp4' ? 'video/mp4' : 'video/webm' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `StudioPro_Export_${Date.now()}.webm`;
+                a.download = `StudioPro_Export_${Date.now()}.${format}`;
                 a.click();
 
                 state.isExporting = false;
@@ -1025,30 +672,40 @@
                 setTimeout(() => exportModal.classList.add('hidden'), 1000);
             };
 
-            videoEl.currentTime = state.trimStart;
+            // 선택된 클립들의 순서대로 순차 녹화 진행
+            let currentClipIdx = 0;
+            videoEl.currentTime = state.clips[0].start;
             mediaRecorder.start();
 
+            const totalDuration = state.clips.reduce((acc, c) => acc + (c.end - c.start), 0);
+            let processedTime = 0;
+
             const exportInterval = setInterval(() => {
-                if (videoEl.currentTime >= state.trimEnd || videoEl.paused) {
-                    clearInterval(exportInterval);
-                    videoEl.pause();
-                    mediaRecorder.stop();
-                    return;
+                let activeClip = state.clips[currentClipIdx];
+
+                if (!activeClip || videoEl.currentTime >= activeClip.end) {
+                    processedTime += (activeClip ? (activeClip.end - activeClip.start) : 0);
+                    currentClipIdx++;
+
+                    if (currentClipIdx >= state.clips.length) {
+                        clearInterval(exportInterval);
+                        videoEl.pause();
+                        mediaRecorder.stop();
+                        return;
+                    }
+                    // 다음 클립의 시작 지점으로 Jump
+                    videoEl.currentTime = state.clips[currentClipIdx].start;
                 }
+
                 videoEl.currentTime += 0.033;
                 renderCanvasFrame();
 
-                const pct = Math.min(100, Math.floor(((videoEl.currentTime - state.trimStart) / (state.trimEnd - state.trimStart)) * 100));
+                const currentProgress = processedTime + (videoEl.currentTime - state.clips[currentClipIdx].start);
+                const pct = Math.min(100, Math.floor((currentProgress / totalDuration) * 100));
                 progressBar.style.width = `${pct}%`;
                 percentText.textContent = `${pct}%`;
             }, 33);
         }
-
-        // Fullscreen
-        document.getElementById('fullscreenBtn').addEventListener('click', () => {
-            if (!document.fullscreenElement) canvasWrapper.requestFullscreen();
-            else document.exitFullscreen();
-        });
 
         function formatTime(seconds) {
             const m = Math.floor(seconds / 60);
