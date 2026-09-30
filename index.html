@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Studio Video Editor</title>
+    <title>Studio Pro Web Video Editor</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -58,7 +58,7 @@
             </div>
             <div>
                 <h1 class="font-bold text-white text-sm md:text-base tracking-wide flex items-center gap-1.5 whitespace-nowrap">
-                    Web Studio <span class="hidden sm:inline-block text-[10px] bg-brand-500/20 text-brand-500 border border-brand-500/30 px-2 py-0.5 rounded-full font-normal">Web Edition</span>
+                    Studio Pro <span class="hidden sm:inline-block text-[10px] bg-brand-500/20 text-brand-500 border border-brand-500/30 px-2 py-0.5 rounded-full font-normal">Web Edition</span>
                 </h1>
             </div>
         </div>
@@ -168,13 +168,14 @@
 
         <!-- Center Player & Preview -->
         <main class="flex-1 flex flex-col bg-dark-900 relative overflow-hidden">
-            <div id="dropZone" class="flex-1 flex items-center justify-center p-3 sm:p-6 relative overflow-hidden min-h-[250px]">
-                <div id="emptyState" class="flex flex-col items-center justify-center text-center p-6 sm:p-8 border-2 border-dashed border-dark-700 rounded-2xl bg-dark-800/30 max-w-md">
+            <div id="dropZone" class="flex-1 flex items-center justify-center p-3 sm:p-6 relative overflow-hidden min-h-[250px] transition-all duration-200 border-2 border-transparent">
+                <div id="emptyState" class="flex flex-col items-center justify-center text-center p-6 sm:p-8 border-2 border-dashed border-dark-700 rounded-2xl bg-dark-800/30 max-w-md pointer-events-none">
                     <div class="w-12 h-12 sm:w-16 sm:h-16 bg-dark-700 rounded-full flex items-center justify-center text-brand-500 text-xl sm:text-2xl mb-3 sm:mb-4">
                         <i class="fa-solid fa-file-video"></i>
                     </div>
                     <h2 class="text-base sm:text-lg font-bold text-white mb-1">편집할 동영상을 불러오세요</h2>
-                    <label class="bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl cursor-pointer transition mt-2 shadow-lg shadow-brand-600/20">
+                    <p class="text-xs text-gray-400 mb-3">파일을 이곳으로 드래그 앤 드롭 하거나 아래 버튼을 누르세요</p>
+                    <label class="bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl cursor-pointer transition mt-2 shadow-lg shadow-brand-600/20 pointer-events-auto">
                         비디오 파일 선택
                         <input type="file" id="videoFileInput" accept="video/*" class="hidden">
                     </label>
@@ -246,7 +247,6 @@
                 <div>
                     <label class="text-gray-300 block mb-1 font-semibold">내보내기 포맷</label>
                     <select id="exportFormat" class="w-full bg-dark-900 text-white p-2.5 rounded-lg border border-dark-600 focus:outline-none focus:border-brand-500">
-                        <!-- MP4 기본 선택 -->
                         <option value="mp4" selected>MP4 (기본 권장 / 브라우저 호환)</option>
                         <option value="webm">WebM (고화질)</option>
                     </select>
@@ -284,8 +284,7 @@
             canvasWidth: 1280,
             canvasHeight: 720,
             
-            // 다중 클립 분할 관리 배열
-            clips: [], // { id, start, end }
+            clips: [],
             selectedClipId: null,
 
             filters: { brightness: 100, contrast: 100 },
@@ -350,6 +349,7 @@
         const ctx = canvas.getContext('2d');
         const canvasWrapper = document.getElementById('canvasWrapper');
         const emptyState = document.getElementById('emptyState');
+        const dropZone = document.getElementById('dropZone');
         const playerControlBar = document.getElementById('playerControlBar');
         const timelineContainer = document.getElementById('timelineContainer');
         const playPauseBtn = document.getElementById('playPauseBtn');
@@ -375,9 +375,40 @@
             });
         });
 
-        // File Loader
+        // File Loader (Button Click)
         videoInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) loadVideoFile(e.target.files[0]);
+        });
+
+        // Drag & Drop Handlers
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.add('bg-brand-600/10', 'border-brand-500');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.remove('bg-brand-600/10', 'border-brand-500');
+            }, false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+
+            if (files && files.length > 0) {
+                const file = files[0];
+                if (file.type.startsWith('video/')) {
+                    loadVideoFile(file);
+                } else {
+                    alert('동영상 파일만 업로드할 수 있습니다.');
+                }
+            }
         });
 
         function loadVideoFile(file) {
@@ -387,7 +418,6 @@
 
             videoEl.onloadedmetadata = () => {
                 state.videoDuration = videoEl.duration;
-                // 초기 전체 영역을 단일 클립으로 등록
                 state.clips = [{ id: Date.now(), start: 0, end: videoEl.duration }];
                 state.selectedClipId = null;
 
@@ -430,14 +460,12 @@
                 return;
             }
 
-            // 현재 재생 위치가 삭제된 구간(빈 공간)인지 체크하고 다음 클립으로 점프
             let currentClip = state.clips.find(c => videoEl.currentTime >= c.start && videoEl.currentTime < c.end);
             if (!currentClip && state.isPlaying) {
                 let nextClip = state.clips.find(c => c.start > videoEl.currentTime);
                 if (nextClip) {
                     videoEl.currentTime = nextClip.start;
                 } else {
-                    // 영상의 끝에 다다르면 재생 정지 또는 처음 클립으로 이동
                     videoEl.currentTime = state.clips[0].start;
                     togglePlay();
                 }
@@ -501,9 +529,7 @@
             }
         }
 
-        // --- Multi-Clip Split & Delete Implementation ---
-        
-        // 컷 분할 (Split)
+        // Split & Delete
         document.getElementById('splitVideoBtn').addEventListener('click', splitCurrentClip);
         function splitCurrentClip() {
             const currentTime = videoEl.currentTime;
@@ -515,7 +541,7 @@
                 const clip2 = { id: Date.now() + 1, start: currentTime, end: target.end };
 
                 state.clips.splice(targetIndex, 1, clip1, clip2);
-                state.selectedClipId = clip2.id; // 분할 후 뒤쪽 클립 선택
+                state.selectedClipId = clip2.id;
 
                 pushState();
                 updateTimelineClips();
@@ -523,7 +549,6 @@
             }
         }
 
-        // 클립 삭제 (Delete)
         deleteClipBtn.addEventListener('click', deleteSelectedClip);
         function deleteSelectedClip() {
             if (!state.selectedClipId) return;
@@ -536,7 +561,6 @@
             renderCanvasFrame();
         }
 
-        // Timeline Clips Render & Select
         function updateTimelineClips() {
             const container = document.getElementById('videoClipsContainer');
             deleteClipBtn.disabled = !state.selectedClipId;
@@ -604,7 +628,7 @@
             `).join('');
         }
 
-        // Undo/Redo & Key Shortcuts
+        // Shortcuts
         document.getElementById('undoBtn').addEventListener('click', undo);
         document.getElementById('redoBtn').addEventListener('click', redo);
 
@@ -619,7 +643,7 @@
             else if (e.ctrlKey && e.code === 'KeyY') { e.preventDefault(); redo(); }
         });
 
-        // Export System (MP4 Primary Default)
+        // Export System
         const exportModal = document.getElementById('exportModal');
         document.getElementById('openExportModalBtn').addEventListener('click', () => exportModal.classList.remove('hidden'));
         document.getElementById('closeExportModalBtn').addEventListener('click', () => exportModal.classList.add('hidden'));
@@ -633,7 +657,7 @@
             state.isExporting = true;
             if (state.isPlaying) togglePlay();
 
-            const format = document.getElementById('exportFormat').value; // 'mp4' or 'webm'
+            const format = document.getElementById('exportFormat').value;
             const mimeType = format === 'mp4' ? 'video/mp4' : 'video/webm;codecs=vp9';
 
             const progressWrapper = document.getElementById('exportProgressWrapper');
@@ -651,7 +675,6 @@
             try {
                 mediaRecorder = new MediaRecorder(stream, { mimeType: mimeType });
             } catch (err) {
-                // 특정 브라우저에서 mp4 mimeType 미지원 시 webm으로 자동 폴백
                 mediaRecorder = new MediaRecorder(stream);
             }
 
@@ -672,7 +695,6 @@
                 setTimeout(() => exportModal.classList.add('hidden'), 1000);
             };
 
-            // 선택된 클립들의 순서대로 순차 녹화 진행
             let currentClipIdx = 0;
             videoEl.currentTime = state.clips[0].start;
             mediaRecorder.start();
@@ -693,7 +715,6 @@
                         mediaRecorder.stop();
                         return;
                     }
-                    // 다음 클립의 시작 지점으로 Jump
                     videoEl.currentTime = state.clips[currentClipIdx].start;
                 }
 
