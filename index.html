@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio Pro Web Video Editor</title>
+    <title>Studio Pro Web Video Editor - Ultimate Edition</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -38,14 +38,34 @@
         }
     </script>
     <style>
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #181B24; }
-        ::-webkit-scrollbar-thumb { background: #3F475E; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #6366F1; }
-        .canvas-container { box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7); }
-        .ruler-ticks { background-image: repeating-linear-gradient(90deg, #3F475E 0, #3F475E 1px, transparent 0, transparent 10px); }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #181B24;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3F475E;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366F1;
+        }
+        .canvas-container {
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+        }
+        .ruler-ticks {
+            background-image: repeating-linear-gradient(90deg, #3F475E 0, #3F475E 1px, transparent 0, transparent 20px);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 <body class="bg-dark-900 text-gray-200 font-sans h-screen flex flex-col overflow-hidden select-none">
@@ -58,12 +78,12 @@
             </div>
             <div>
                 <h1 class="font-bold text-white text-sm md:text-base tracking-wide flex items-center gap-1.5 whitespace-nowrap">
-                    Studio Pro <span class="hidden sm:inline-block text-[10px] bg-brand-500/20 text-brand-500 border border-brand-500/30 px-2 py-0.5 rounded-full font-normal">Web Edition</span>
+                    Studio Pro <span class="hidden sm:inline-block text-[10px] bg-brand-500/20 text-brand-500 border border-brand-500/30 px-2 py-0.5 rounded-full font-normal">Ultimate Edition</span>
                 </h1>
             </div>
         </div>
 
-        <!-- Undo / Redo -->
+        <!-- Undo / Redo & Controls -->
         <div class="flex items-center space-x-1.5 md:space-x-2">
             <button id="undoBtn" class="bg-dark-700 hover:bg-dark-600 disabled:opacity-40 text-gray-300 text-xs px-2.5 py-1.5 rounded-lg border border-dark-600 transition flex items-center gap-1" title="실행 취소 (Ctrl+Z)">
                 <i class="fa-solid fa-rotate-left"></i> <span class="hidden md:inline">실행 취소</span>
@@ -75,6 +95,7 @@
 
         <!-- Project Controls & Actions -->
         <div class="flex items-center space-x-2 md:space-x-3 overflow-x-auto no-scrollbar">
+            <!-- Aspect Ratio Selector -->
             <div class="flex items-center bg-dark-700 rounded-lg p-1 border border-dark-600 shrink-0">
                 <span class="text-[11px] text-gray-400 px-1.5 font-medium whitespace-nowrap">비율</span>
                 <select id="aspectRatioSelect" class="bg-dark-800 text-[11px] md:text-xs text-white px-1.5 py-1 rounded border border-dark-600 focus:outline-none focus:border-brand-500">
@@ -85,6 +106,16 @@
                 </select>
             </div>
 
+            <!-- Project File IO -->
+            <button id="exportProjectBtn" class="bg-dark-700 hover:bg-dark-600 text-[11px] md:text-xs px-2.5 py-1.5 rounded-lg border border-dark-600 flex items-center gap-1.5 transition shrink-0 whitespace-nowrap">
+                <i class="fa-solid fa-download text-gray-400"></i> <span class="hidden sm:inline">프로젝트</span> 저장
+            </button>
+            <label class="bg-dark-700 hover:bg-dark-600 text-[11px] md:text-xs px-2.5 py-1.5 rounded-lg border border-dark-600 cursor-pointer flex items-center gap-1.5 transition shrink-0 whitespace-nowrap">
+                <i class="fa-solid fa-upload text-gray-400"></i> 불러오기
+                <input type="file" id="importProjectInput" accept=".json" class="hidden">
+            </label>
+
+            <!-- Export Video Button -->
             <button id="openExportModalBtn" class="bg-brand-600 hover:bg-brand-500 text-white text-[11px] md:text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-lg shadow-brand-600/20 transition shrink-0 whitespace-nowrap">
                 <i class="fa-solid fa-file-video"></i> 내보내기
             </button>
@@ -94,8 +125,9 @@
     <!-- Main Workspace -->
     <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
         
-        <!-- Left Tools Sidebar -->
+        <!-- Left Tools Sidebar Tabs -->
         <aside class="w-full md:w-80 lg:w-96 bg-dark-800 border-r border-dark-700 flex flex-col shrink-0 z-10 max-h-64 md:max-h-none overflow-hidden">
+            <!-- Sidebar Navigation Tabs -->
             <div class="flex border-b border-dark-700 bg-dark-900/50 overflow-x-auto no-scrollbar shrink-0">
                 <button data-tab="subtitles" class="tab-btn flex-1 min-w-[75px] px-2 py-2.5 text-[11px] sm:text-xs font-semibold border-b-2 border-brand-500 text-brand-500 flex items-center justify-center gap-1.5 whitespace-nowrap">
                     <i class="fa-solid fa-closed-captioning text-xs sm:text-sm"></i> 자막/텍스트
@@ -103,17 +135,27 @@
                 <button data-tab="filters" class="tab-btn flex-1 min-w-[75px] px-2 py-2.5 text-[11px] sm:text-xs font-semibold border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex items-center justify-center gap-1.5 whitespace-nowrap">
                     <i class="fa-solid fa-sliders text-xs sm:text-sm"></i> 필터/변환
                 </button>
+                <button data-tab="audio" class="tab-btn flex-1 min-w-[75px] px-2 py-2.5 text-[11px] sm:text-xs font-semibold border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex items-center justify-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-music text-xs sm:text-sm"></i> 오디오/BGM
+                </button>
+                <button data-tab="overlay" class="tab-btn flex-1 min-w-[75px] px-2 py-2.5 text-[11px] sm:text-xs font-semibold border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex items-center justify-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-image text-xs sm:text-sm"></i> 오버레이
+                </button>
             </div>
 
+            <!-- Tab Contents -->
             <div class="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4">
-                <!-- Subtitles Tab -->
+                
+                <!-- 1. Subtitles Tab -->
                 <div id="tab-subtitles" class="tab-content space-y-4">
                     <div class="bg-dark-700/50 p-3 rounded-xl border border-dark-600/50 space-y-3">
                         <h3 class="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center justify-between">
                             <span>자막 추가 / 편집</span>
+                            <span class="text-[10px] text-gray-500 font-normal">캔버스 직접 드래그 가능</span>
                         </h3>
                         <textarea id="subTextInput" rows="2" placeholder="자막 내용을 입력하세요..." class="w-full bg-dark-900 text-sm text-white p-2.5 rounded-lg border border-dark-600 focus:outline-none focus:border-brand-500 resize-none"></textarea>
                         
+                        <!-- Subtitle Timings -->
                         <div class="grid grid-cols-2 gap-2 text-xs">
                             <div>
                                 <label class="text-gray-400 block mb-1">시작 시간 (초)</label>
@@ -125,11 +167,45 @@
                             </div>
                         </div>
 
+                        <!-- Subtitle Custom Style Options -->
+                        <div class="space-y-2 pt-2 border-t border-dark-600/50">
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="text-[11px] text-gray-400 block mb-1">폰트</label>
+                                    <select id="subFontFamily" class="w-full bg-dark-900 text-xs text-white p-1.5 rounded border border-dark-600">
+                                        <option value="Noto Sans KR">기본 (Noto Sans)</option>
+                                        <option value="Gowun Dodum">고운돋움 (손글씨)</option>
+                                        <option value="Sunflower">해바라기 (제목용)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-[11px] text-gray-400 block mb-1">크기 (px)</label>
+                                    <input type="number" id="subFontSize" value="32" min="12" max="120" class="w-full bg-dark-900 text-xs text-white p-1.5 rounded border border-dark-600 text-center">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-2 pt-1">
+                                <div>
+                                    <label class="text-[10px] text-gray-400 block mb-0.5">글자색</label>
+                                    <input type="color" id="subTextColor" value="#FFFFFF" class="w-full h-8 bg-dark-900 rounded border border-dark-600 cursor-pointer">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] text-gray-400 block mb-0.5">외곽선</label>
+                                    <input type="color" id="subStrokeColor" value="#000000" class="w-full h-8 bg-dark-900 rounded border border-dark-600 cursor-pointer">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] text-gray-400 block mb-0.5">배경색</label>
+                                    <input type="color" id="subBgColor" value="#000000" class="w-full h-8 bg-dark-900 rounded border border-dark-600 cursor-pointer">
+                                </div>
+                            </div>
+                        </div>
+
                         <button id="addSubtitleBtn" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-semibold py-2 rounded-lg text-xs transition flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-plus"></i> 자막 등록
+                            <i class="fa-solid fa-plus"></i> <span id="addSubBtnText">자막 등록</span>
                         </button>
                     </div>
 
+                    <!-- Subtitle List -->
                     <div class="space-y-2">
                         <div class="flex items-center justify-between text-xs font-semibold text-gray-400 px-1">
                             <span>등록된 자막 목록</span>
@@ -141,7 +217,7 @@
                     </div>
                 </div>
 
-                <!-- Filters Tab -->
+                <!-- 2. Filters & Transform Tab -->
                 <div id="tab-filters" class="tab-content hidden space-y-4">
                     <div class="bg-dark-700/50 p-3 rounded-xl border border-dark-600/50 space-y-3">
                         <h3 class="text-xs font-bold text-gray-300 uppercase tracking-wider">비디오 색상 / 필터</h3>
@@ -160,80 +236,237 @@
                                 </div>
                                 <input type="range" id="filterContrast" min="0" max="200" value="100" class="w-full accent-brand-500 h-1.5 bg-dark-900 rounded-lg cursor-pointer">
                             </div>
+                            <div>
+                                <div class="flex justify-between text-gray-400 mb-1">
+                                    <span>채도 (Saturate)</span>
+                                    <span id="valSaturate">100%</span>
+                                </div>
+                                <input type="range" id="filterSaturate" min="0" max="200" value="100" class="w-full accent-brand-500 h-1.5 bg-dark-900 rounded-lg cursor-pointer">
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-gray-400 mb-1">
+                                    <span>흑백 (Grayscale)</span>
+                                    <span id="valGrayscale">0%</span>
+                                </div>
+                                <input type="range" id="filterGrayscale" min="0" max="100" value="0" class="w-full accent-brand-500 h-1.5 bg-dark-900 rounded-lg cursor-pointer">
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-gray-400 mb-1">
+                                    <span>블러 (Blur)</span>
+                                    <span id="valBlur">0px</span>
+                                </div>
+                                <input type="range" id="filterBlur" min="0" max="20" value="0" class="w-full accent-brand-500 h-1.5 bg-dark-900 rounded-lg cursor-pointer">
+                            </div>
+                        </div>
+                        <button id="resetFiltersBtn" class="w-full bg-dark-700 hover:bg-dark-600 text-gray-300 py-1.5 rounded-lg text-xs transition">
+                            필터 초기화
+                        </button>
+                    </div>
+
+                    <div class="bg-dark-700/50 p-3 rounded-xl border border-dark-600/50 space-y-3">
+                        <h3 class="text-xs font-bold text-gray-300 uppercase tracking-wider">회전 / 반전 / 속도</h3>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <button id="rotateBtn" class="bg-dark-900 hover:bg-dark-600 p-2 rounded-lg border border-dark-600 flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-rotate-right"></i> 90도 회전
+                            </button>
+                            <button id="flipHBtn" class="bg-dark-900 hover:bg-dark-600 p-2 rounded-lg border border-dark-600 flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-arrows-left-right"></i> 좌우 반전
+                            </button>
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-400 block mb-1">재생 속도 (배속)</label>
+                            <select id="speedSelect" class="w-full bg-dark-900 text-xs text-white p-2 rounded-lg border border-dark-600">
+                                <option value="0.25">0.25x (매우 느리게)</option>
+                                <option value="0.5">0.5x (느리게)</option>
+                                <option value="1.0" selected>1.0x (일반)</option>
+                                <option value="1.25">1.25x (빠르게)</option>
+                                <option value="1.5">1.5x (더 빠르게)</option>
+                                <option value="2.0">2.0x (2배속)</option>
+                            </select>
                         </div>
                     </div>
                 </div>
+
+                <!-- 3. Audio & BGM Tab -->
+                <div id="tab-audio" class="tab-content hidden space-y-4">
+                    <div class="bg-dark-700/50 p-3 rounded-xl border border-dark-600/50 space-y-3">
+                        <h3 class="text-xs font-bold text-gray-300 uppercase tracking-wider">배경음악 (BGM) 추가</h3>
+                        <input type="file" id="bgmFileInput" accept="audio/*" class="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-600 file:text-white hover:file:bg-brand-500 cursor-pointer">
+                        
+                        <div class="space-y-3 pt-2">
+                            <div>
+                                <div class="flex justify-between text-xs text-gray-400 mb-1">
+                                    <span>비디오 원본 음량</span>
+                                    <span id="valVideoVol">100%</span>
+                                </div>
+                                <input type="range" id="videoVolume" min="0" max="100" value="100" class="w-full accent-brand-500 h-1.5 bg-dark-900 rounded-lg cursor-pointer">
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs text-gray-400 mb-1">
+                                    <span>배경음악 (BGM) 음량</span>
+                                    <span id="valBgmVol">50%</span>
+                                </div>
+                                <input type="range" id="bgmVolume" min="0" max="100" value="50" class="w-full accent-brand-500 h-1.5 bg-dark-900 rounded-lg cursor-pointer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Overlay & Watermark Tab -->
+                <div id="tab-overlay" class="tab-content hidden space-y-4">
+                    <div class="bg-dark-700/50 p-3 rounded-xl border border-dark-600/50 space-y-3">
+                        <h3 class="text-xs font-bold text-gray-300 uppercase tracking-wider">로고 / 스티커 오버레이</h3>
+                        <input type="file" id="overlayFileInput" accept="image/*" class="w-full text-xs text-gray-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-600 file:text-white hover:file:bg-brand-500 cursor-pointer">
+                        
+                        <div id="overlaySettings" class="hidden space-y-2 pt-2 text-xs">
+                            <div>
+                                <label class="text-gray-400 block mb-1">이미지 크기</label>
+                                <input type="range" id="overlayScale" min="20" max="300" value="100" class="w-full accent-brand-500 h-1.5 bg-dark-900 rounded-lg cursor-pointer">
+                            </div>
+                            <button id="removeOverlayBtn" class="w-full bg-red-500/20 text-red-400 hover:bg-red-500/30 py-1.5 rounded-lg text-xs transition border border-red-500/30">
+                                오버레이 이미지 삭제
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </aside>
 
-        <!-- Center Player & Preview -->
+        <!-- Center Player & Preview Section -->
         <main class="flex-1 flex flex-col bg-dark-900 relative overflow-hidden">
-            <div id="dropZone" class="flex-1 flex items-center justify-center p-3 sm:p-6 relative overflow-hidden min-h-[250px] transition-all duration-200 border-2 border-transparent">
-                <div id="emptyState" class="flex flex-col items-center justify-center text-center p-6 sm:p-8 border-2 border-dashed border-dark-700 rounded-2xl bg-dark-800/30 max-w-md pointer-events-none">
+            
+            <div id="dropZone" class="flex-1 flex items-center justify-center p-3 sm:p-6 relative overflow-hidden min-h-[250px]">
+                
+                <div id="dropZoneNotice" class="absolute inset-0 bg-dark-900/90 border-2 border-dashed border-brand-500/50 rounded-2xl m-6 flex flex-col items-center justify-center z-10 hidden transition pointer-events-none">
+                    <i class="fa-solid fa-cloud-arrow-up text-5xl text-brand-500 mb-3 animate-bounce"></i>
+                    <p class="text-base font-bold text-white">동영상 파일을 여기에 끌어다 놓으세요</p>
+                    <p class="text-xs text-gray-400 mt-1">MP4, WebM, MOV 포맷 지원</p>
+                </div>
+
+                <div id="emptyState" class="flex flex-col items-center justify-center text-center p-6 sm:p-8 border-2 border-dashed border-dark-700 rounded-2xl bg-dark-800/30 max-w-md">
                     <div class="w-12 h-12 sm:w-16 sm:h-16 bg-dark-700 rounded-full flex items-center justify-center text-brand-500 text-xl sm:text-2xl mb-3 sm:mb-4">
                         <i class="fa-solid fa-file-video"></i>
                     </div>
-                    <h2 class="text-base sm:text-lg font-bold text-white mb-1">편집할 동영상을 불러오세요</h2>
-                    <p class="text-xs text-gray-400 mb-3">파일을 이곳으로 드래그 앤 드롭 하거나 아래 버튼을 누르세요</p>
-                    <label class="bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl cursor-pointer transition mt-2 shadow-lg shadow-brand-600/20 pointer-events-auto">
+                    <h2 class="text-base sm:text-lg font-bold text-white mb-4">편집할 동영상을 불러오세요</h2>
+                    <label class="bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl cursor-pointer transition shadow-lg shadow-brand-600/20">
                         비디오 파일 선택
                         <input type="file" id="videoFileInput" accept="video/*" class="hidden">
                     </label>
                 </div>
 
+                <!-- Main Interactive Video Preview Canvas -->
                 <div id="canvasWrapper" class="relative hidden canvas-container rounded-lg overflow-hidden border border-dark-700 max-w-full max-h-full flex items-center justify-center">
                     <canvas id="mainCanvas" class="block bg-black cursor-crosshair max-w-full max-h-full"></canvas>
+                    
+                    <div class="absolute top-3 right-3 flex items-center space-x-2">
+                        <button id="fullscreenBtn" title="전체화면" class="bg-dark-900/80 hover:bg-dark-900 text-white w-8 h-8 rounded-lg flex items-center justify-center backdrop-blur text-xs transition border border-white/10">
+                            <i class="fa-solid fa-expand"></i>
+                        </button>
+                    </div>
                 </div>
+
             </div>
 
-            <!-- Controls Bar -->
+            <!-- Player Quick Controls Bar -->
             <div id="playerControlBar" class="h-12 bg-dark-800 border-t border-dark-700 px-3 sm:px-6 flex items-center justify-between shrink-0 hidden gap-2 overflow-x-auto no-scrollbar">
-                <div class="flex items-center space-x-3 shrink-0">
-                    <button id="playPauseBtn" class="text-brand-500 hover:text-brand-400 text-base sm:text-lg transition">
+                <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+                    <button id="prevFrameBtn" class="text-gray-400 hover:text-white text-xs p-1" title="이전 프레임 (-1/30초)">
+                        <i class="fa-solid fa-backward-step"></i>
+                    </button>
+                    <button id="playPauseBtn" class="text-brand-500 hover:text-brand-400 text-base sm:text-lg transition px-1">
                         <i class="fa-solid fa-play"></i>
                     </button>
-                    <span id="timeDisplay" class="text-xs font-mono text-gray-300 whitespace-nowrap">00:00 / 00:00</span>
+                    <button id="nextFrameBtn" class="text-gray-400 hover:text-white text-xs p-1" title="다음 프레임 (+1/30초)">
+                        <i class="fa-solid fa-forward-step"></i>
+                    </button>
+                    <span id="timeDisplay" class="text-xs font-mono text-gray-300 whitespace-nowrap ml-1">00:00 / 00:00</span>
+                    
+                    <!-- 플레이어 빠른 재생 속도(Playback Speed) 컨트롤 -->
+                    <div class="flex items-center space-x-1 pl-2 border-l border-dark-700">
+                        <i class="fa-solid fa-gauge text-xs text-gray-400"></i>
+                        <select id="quickSpeedSelect" class="bg-dark-900 text-[11px] text-gray-300 px-1.5 py-1 rounded border border-dark-600 focus:outline-none focus:border-brand-500">
+                            <option value="0.25">0.25x</option>
+                            <option value="0.5">0.5x</option>
+                            <option value="1.0" selected>1.0x</option>
+                            <option value="1.25">1.25x</option>
+                            <option value="1.5">1.5x</option>
+                            <option value="2.0">2.0x</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="flex items-center space-x-2 shrink-0">
                     <button id="splitVideoBtn" class="bg-dark-700 hover:bg-dark-600 text-xs text-white px-2.5 py-1.5 rounded-lg border border-dark-600 flex items-center gap-1.5 transition whitespace-nowrap">
-                        <i class="fa-solid fa-scissors text-brand-500"></i> 현재 위치 컷 분할
+                        <i class="fa-solid fa-scissors text-brand-500"></i> <span class="hidden sm:inline">현재 위치</span> 컷 분할
                     </button>
-                    <button id="deleteClipBtn" disabled class="bg-red-500/20 hover:bg-red-500/30 text-red-400 disabled:opacity-40 text-xs px-2.5 py-1.5 rounded-lg border border-red-500/30 flex items-center gap-1.5 transition whitespace-nowrap">
-                        <i class="fa-solid fa-trash-can"></i> 선택 클립 삭제
+                    <div class="h-4 w-px bg-dark-700 mx-0.5"></div>
+                    <span class="text-xs text-gray-400 hidden sm:inline">구간 지정:</span>
+                    <input type="number" id="trimStart" value="0" step="0.1" min="0" class="w-12 sm:w-14 bg-dark-900 text-xs text-white p-1 rounded border border-dark-600 text-center">
+                    <span class="text-xs text-gray-500">~</span>
+                    <input type="number" id="trimEnd" value="0" step="0.1" min="0" class="w-12 sm:w-14 bg-dark-900 text-xs text-white p-1 rounded border border-dark-600 text-center">
+                    <span class="text-xs text-gray-400">초</span>
+                    <button id="applyTrimBtn" class="bg-brand-600 hover:bg-brand-500 text-xs text-white px-2.5 py-1.5 rounded-lg font-medium flex items-center gap-1 transition whitespace-nowrap ml-1">
+                        <i class="fa-solid fa-crop"></i> 선택 구간 잘라내기
                     </button>
                 </div>
             </div>
 
-            <!-- Timeline -->
-            <div id="timelineContainer" class="h-40 sm:h-48 bg-dark-800 border-t border-dark-700 flex flex-col shrink-0 hidden relative">
+            <!-- Bottom NLE Timeline Editor Area -->
+            <div id="timelineContainer" class="h-44 sm:h-52 bg-dark-800 border-t border-dark-700 flex flex-col shrink-0 hidden relative">
                 <div class="h-8 bg-dark-900/60 border-b border-dark-700 px-3 sm:px-4 flex items-center justify-between text-xs text-gray-400">
-                    <span class="font-semibold text-gray-300 text-xs">타임라인</span>
-                    <span class="text-[10px] sm:text-[11px] text-gray-500">클립 클릭: 선택 | Del: 선택 클립 삭제</span>
+                    <div class="flex items-center space-x-3">
+                        <span class="font-semibold text-gray-300 text-xs">타임라인</span>
+                        <!-- Timeline Zoom Slider -->
+                        <div class="flex items-center space-x-1.5 bg-dark-800 px-2 py-0.5 rounded border border-dark-700">
+                            <i class="fa-solid fa-magnifying-glass-minus text-[10px] text-gray-400"></i>
+                            <input type="range" id="timelineZoom" min="100" max="400" value="100" class="w-16 accent-brand-500 h-1 bg-dark-900 rounded cursor-pointer">
+                            <i class="fa-solid fa-magnifying-glass-plus text-[10px] text-gray-400"></i>
+                        </div>
+                    </div>
+                    <div class="text-[10px] sm:text-[11px] text-gray-500 truncate max-w-[200px] sm:max-w-none">
+                        단축키: Space(재생) / ← →(프레임 이동) / Ctrl+Z(Undo) / Delete(자막 삭제)
+                    </div>
                 </div>
 
                 <div class="flex-1 overflow-x-auto overflow-y-hidden relative p-2" id="timelineScrollArea">
-                    <div id="timelineRuler" class="h-5 border-b border-dark-700 relative mb-2 ruler-ticks cursor-pointer">
-                        <div id="playhead" class="absolute top-0 bottom-0 w-0.5 bg-red-500 z-30 pointer-events-none" style="left: 0%;">
+                    <div id="timelineRuler" class="h-5 border-b border-dark-700 relative mb-2 ruler-ticks cursor-pointer min-w-full">
+                        <div id="playhead" class="absolute top-0 bottom-0 w-0.5 bg-red-500 z-30 cursor-ew-resize" style="left: 0%;">
                             <div class="w-3 h-3 bg-red-500 rotate-45 -ml-1.25 -mt-1 rounded-sm"></div>
                         </div>
                     </div>
 
-                    <div class="space-y-1.5 text-xs font-medium">
-                        <div class="h-10 bg-dark-700/60 rounded-md relative border border-dark-600/50 overflow-hidden" id="videoTrackRow">
-                            <div id="videoClipsContainer" class="absolute inset-0"></div>
+                    <div id="timelineTracksWrapper" class="space-y-1.5 text-xs font-medium min-w-full">
+                        <!-- Video Track -->
+                        <div class="h-8 sm:h-9 bg-dark-700/60 rounded-md relative flex items-center border border-dark-600/50 overflow-hidden" id="videoTrackRow">
+                            <span class="absolute left-2 z-10 text-[10px] bg-dark-900/80 px-1.5 py-0.5 rounded text-gray-300 pointer-events-none">비디오</span>
+                            <canvas id="waveformCanvas" class="absolute inset-0 w-full h-full opacity-30 pointer-events-none"></canvas>
+                            <div id="videoTrackClip" class="absolute top-1 bottom-1 bg-brand-600/40 border border-brand-500 rounded flex items-center px-2 text-[11px] text-brand-200 overflow-hidden whitespace-nowrap">
+                                메인 비디오 클립
+                            </div>
                         </div>
-                        <div class="h-7 bg-dark-700/40 rounded-md relative flex items-center border border-dark-600/30">
-                            <span class="absolute left-2 z-10 text-[10px] bg-dark-900/80 px-1.5 py-0.5 rounded text-amber-400">자막</span>
+
+                        <!-- Audio Track -->
+                        <div class="h-7 sm:h-8 bg-dark-700/40 rounded-md relative flex items-center border border-dark-600/30" id="audioTrackRow">
+                            <span class="absolute left-2 z-10 text-[10px] bg-dark-900/80 px-1.5 py-0.5 rounded text-emerald-400 pointer-events-none">오디오 BGM</span>
+                            <div id="audioTrackClip" class="absolute top-1 bottom-1 bg-emerald-600/30 border border-emerald-500/50 rounded flex items-center px-2 text-[10px] text-emerald-200 hidden truncate">
+                                배경음악 트랙
+                            </div>
+                        </div>
+
+                        <!-- Subtitle Track -->
+                        <div class="h-7 sm:h-8 bg-dark-700/40 rounded-md relative flex items-center border border-dark-600/30" id="subTrackRow">
+                            <span class="absolute left-2 z-10 text-[10px] bg-dark-900/80 px-1.5 py-0.5 rounded text-amber-400 pointer-events-none">자막</span>
                             <div id="subtitleClipsContainer" class="absolute inset-0"></div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </main>
     </div>
 
-    <!-- Export Modal -->
+    <!-- Export Settings Modal -->
     <div id="exportModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-dark-800 border border-dark-700 rounded-2xl w-full max-w-md p-5 sm:p-6 space-y-5 shadow-2xl">
             <div class="flex items-center justify-between border-b border-dark-700 pb-3">
@@ -244,11 +477,22 @@
             </div>
 
             <div class="space-y-4 text-xs">
+                <!-- 해상도 선택 (Resolution Selector) 추가 -->
+                <div>
+                    <label class="text-gray-300 block mb-1 font-semibold">내보내기 해상도</label>
+                    <select id="exportResolution" class="w-full bg-dark-900 text-white p-2.5 rounded-lg border border-dark-600 focus:outline-none focus:border-brand-500">
+                        <option value="1080" selected>FHD (1080p - 고화질 권장)</option>
+                        <option value="720">HD (720p - 일반)</option>
+                        <option value="480">SD (480p - 저용량)</option>
+                        <option value="2160">4K (2160p - 초고화질)</option>
+                    </select>
+                </div>
+
                 <div>
                     <label class="text-gray-300 block mb-1 font-semibold">내보내기 포맷</label>
                     <select id="exportFormat" class="w-full bg-dark-900 text-white p-2.5 rounded-lg border border-dark-600 focus:outline-none focus:border-brand-500">
-                        <option value="mp4" selected>MP4 (기본 권장 / 브라우저 호환)</option>
-                        <option value="webm">WebM (고화질)</option>
+                        <option value="mp4" selected>MP4 (MP4/H.264 인코딩 기본)</option>
+                        <option value="webm">WebM (웹 전용 호환)</option>
                     </select>
                 </div>
 
@@ -272,41 +516,157 @@
         </div>
     </div>
 
-    <video id="hiddenVideo" class="hidden" playsinline></video>
+    <!-- Muted direct output to prevent duplicate audio layering -->
+    <video id="hiddenVideo" class="hidden" playsinline muted crossOrigin="anonymous"></video>
+    <audio id="hiddenAudio" class="hidden" crossOrigin="anonymous"></audio>
 
     <script>
-        // State Management & Multi-Clip Data
+        // Anti-Piracy / Protection Features (우클릭, 드래그, 개발자 도구 단축키 차단)
+        document.addEventListener('contextmenu', (e) => { e.preventDefault(); return false; });
+        document.addEventListener('selectstart', (e) => {
+            if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return true;
+            e.preventDefault(); return false;
+        });
+        document.addEventListener('dragstart', (e) => { e.preventDefault(); return false; });
+        document.addEventListener('keydown', (e) => {
+            if (e.keyCode === 123) { e.preventDefault(); return false; }
+            if (e.ctrlKey && (e.shiftKey && (e.keyCode === 73 || e.keyCode === 74) || e.keyCode === 85 || e.keyCode === 83)) {
+                e.preventDefault(); return false;
+            }
+        });
+
+        if (document.fonts) {
+            document.fonts.ready.then(() => {
+                if (typeof renderCanvasFrame === 'function') renderCanvasFrame();
+            });
+        }
+
+        // IndexedDB Storage Initialization for Auto Save / Recovery
+        const DB_NAME = 'StudioProDB';
+        const DB_VERSION = 1;
+        let db = null;
+
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                request.onupgradeneeded = (e) => {
+                    db = e.target.result;
+                    if (!db.objectStoreNames.contains('projects')) {
+                        db.createObjectStore('projects', { keyPath: 'id' });
+                    }
+                };
+                request.onsuccess = (e) => {
+                    db = e.target.result;
+                    resolve(db);
+                };
+                request.onerror = (e) => reject(e);
+            });
+        }
+
+        async function saveProjectToDB(data) {
+            if (!db) await initDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction('projects', 'readwrite');
+                const store = tx.objectStore('projects');
+                store.put({ id: 'current_session', ...data, updatedAt: Date.now() });
+                tx.oncomplete = () => resolve();
+                tx.onerror = (e) => reject(e);
+            });
+        }
+
+        // State Management & History Stack
         const state = {
             videoFile: null,
             videoDuration: 0,
+            currentTime: 0,
             isPlaying: false,
             aspectRatio: '16:9',
             canvasWidth: 1280,
             canvasHeight: 720,
+            zoomScale: 1.0,
             
-            clips: [],
-            selectedClipId: null,
+            trimStart: 0,
+            trimEnd: 0,
+            rotation: 0,
+            flipH: false,
+            playbackRate: 1.0,
+            filters: { brightness: 100, contrast: 100, saturate: 100, grayscale: 0, blur: 0 },
 
-            filters: { brightness: 100, contrast: 100 },
             subtitles: [],
             selectedSubId: null,
+
+            videoVolume: 1.0,
+            bgmVolume: 0.5,
+            overlayImg: null,
+            overlayRawImg: null,
+            overlayPos: { x: 50, y: 50, width: 150, height: 150, scale: 100 },
+            
             isExporting: false
         };
 
         const historyStack = [];
         let historyIndex = -1;
 
+        let currentVideoBlobUrl = null;
+        let currentBgmBlobUrl = null;
+
+        let audioCtx = null;
+        let videoAudioSource = null;
+        let bgmAudioSource = null;
+        let videoGainNode = null;
+        let bgmGainNode = null;
+        let audioDestinationNode = null;
+
+        function initAudioContext() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+
+            if (!videoAudioSource) {
+                videoAudioSource = audioCtx.createMediaElementSource(videoEl);
+                bgmAudioSource = audioCtx.createMediaElementSource(audioEl);
+
+                videoGainNode = audioCtx.createGain();
+                bgmGainNode = audioCtx.createGain();
+
+                audioDestinationNode = audioCtx.createMediaStreamDestination();
+
+                videoAudioSource.connect(videoGainNode);
+                bgmAudioSource.connect(bgmGainNode);
+
+                videoGainNode.connect(audioCtx.destination);
+                bgmGainNode.connect(audioCtx.destination);
+
+                videoGainNode.connect(audioDestinationNode);
+                bgmGainNode.connect(audioDestinationNode);
+            }
+
+            videoGainNode.gain.value = state.videoVolume;
+            bgmGainNode.gain.value = state.bgmVolume;
+        }
+
         function pushState() {
-            if (historyIndex < historyStack.length - 1) historyStack.splice(historyIndex + 1);
+            if (historyIndex < historyStack.length - 1) {
+                historyStack.splice(historyIndex + 1);
+            }
             const snap = {
                 aspectRatio: state.aspectRatio,
-                clips: JSON.parse(JSON.stringify(state.clips)),
+                trimStart: state.trimStart,
+                trimEnd: state.trimEnd,
+                rotation: state.rotation,
+                flipH: state.flipH,
+                playbackRate: state.playbackRate,
                 filters: { ...state.filters },
-                subtitles: JSON.parse(JSON.stringify(state.subtitles))
+                subtitles: JSON.parse(JSON.stringify(state.subtitles)),
+                overlayPos: { ...state.overlayPos },
+                videoVolume: state.videoVolume,
+                bgmVolume: state.bgmVolume
             };
             historyStack.push(snap);
             historyIndex = historyStack.length - 1;
             updateUndoRedoUI();
+            saveProjectToDB(snap);
         }
 
         function updateUndoRedoUI() {
@@ -330,10 +690,42 @@
 
         function applyStateSnapshot(snap) {
             state.aspectRatio = snap.aspectRatio;
-            state.clips = JSON.parse(JSON.stringify(snap.clips));
+            state.trimStart = snap.trimStart;
+            state.trimEnd = snap.trimEnd;
+            state.rotation = snap.rotation;
+            state.flipH = snap.flipH;
+            state.playbackRate = snap.playbackRate;
             state.filters = { ...snap.filters };
             state.subtitles = JSON.parse(JSON.stringify(snap.subtitles));
-            state.selectedClipId = null;
+            state.overlayPos = { ...snap.overlayPos };
+            state.videoVolume = snap.videoVolume;
+            state.bgmVolume = snap.bgmVolume;
+
+            document.getElementById('aspectRatioSelect').value = state.aspectRatio;
+            document.getElementById('trimStart').value = state.trimStart.toFixed(1);
+            document.getElementById('trimEnd').value = state.trimEnd.toFixed(1);
+            document.getElementById('speedSelect').value = state.playbackRate;
+            document.getElementById('quickSpeedSelect').value = state.playbackRate;
+
+            document.getElementById('filterBrightness').value = state.filters.brightness;
+            document.getElementById('valBrightness').textContent = `${state.filters.brightness}%`;
+            document.getElementById('filterContrast').value = state.filters.contrast;
+            document.getElementById('valContrast').textContent = `${state.filters.contrast}%`;
+            document.getElementById('filterSaturate').value = state.filters.saturate;
+            document.getElementById('valSaturate').textContent = `${state.filters.saturate}%`;
+            document.getElementById('filterGrayscale').value = state.filters.grayscale;
+            document.getElementById('valGrayscale').textContent = `${state.filters.grayscale}%`;
+            document.getElementById('filterBlur').value = state.filters.blur;
+            document.getElementById('valBlur').textContent = `${state.filters.blur}px`;
+
+            document.getElementById('videoVolume').value = state.videoVolume * 100;
+            document.getElementById('valVideoVol').textContent = `${Math.round(state.videoVolume * 100)}%`;
+            document.getElementById('bgmVolume').value = state.bgmVolume * 100;
+            document.getElementById('valBgmVol').textContent = `${Math.round(state.bgmVolume * 100)}%`;
+
+            if (videoGainNode) videoGainNode.gain.value = state.videoVolume;
+            if (bgmGainNode) bgmGainNode.gain.value = state.bgmVolume;
+            videoEl.playbackRate = state.playbackRate;
 
             updateCanvasDimensions();
             renderSubtitlesList();
@@ -342,25 +734,29 @@
             updateUndoRedoUI();
         }
 
-        // DOM Elements
+        // DOM References
         const videoInput = document.getElementById('videoFileInput');
         const videoEl = document.getElementById('hiddenVideo');
+        const audioEl = document.getElementById('hiddenAudio');
         const canvas = document.getElementById('mainCanvas');
         const ctx = canvas.getContext('2d');
         const canvasWrapper = document.getElementById('canvasWrapper');
         const emptyState = document.getElementById('emptyState');
-        const dropZone = document.getElementById('dropZone');
         const playerControlBar = document.getElementById('playerControlBar');
         const timelineContainer = document.getElementById('timelineContainer');
         const playPauseBtn = document.getElementById('playPauseBtn');
         const timeDisplay = document.getElementById('timeDisplay');
         const playhead = document.getElementById('playhead');
         const timelineRuler = document.getElementById('timelineRuler');
-        const deleteClipBtn = document.getElementById('deleteClipBtn');
 
         window.addEventListener('resize', () => { if (state.videoFile) updateCanvasDimensions(); });
+        
+        const resizeObserver = new ResizeObserver(() => {
+            if (state.videoFile) updateCanvasDimensions();
+        });
+        resizeObserver.observe(document.getElementById('dropZone'));
 
-        // Tabs
+        // Tab Navigation
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.tab-btn').forEach(b => {
@@ -375,63 +771,107 @@
             });
         });
 
-        // File Loader (Button Click)
+        // Drag and Drop & Video Loader
+        const dropZone = document.getElementById('dropZone');
+        const dropZoneNotice = document.getElementById('dropZoneNotice');
+
+        let dragCounter = 0;
+        dropZone.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+            dragCounter++;
+            dropZoneNotice.classList.remove('hidden');
+        });
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); });
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dragCounter--;
+            if (dragCounter <= 0) {
+                dragCounter = 0;
+                dropZoneNotice.classList.add('hidden');
+            }
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dragCounter = 0;
+            dropZoneNotice.classList.add('hidden');
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('video/')) loadVideoFile(files[0]);
+        });
         videoInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) loadVideoFile(e.target.files[0]);
         });
 
-        // Drag & Drop Handlers
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropZone.addEventListener(eventName, (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                dropZone.classList.add('bg-brand-600/10', 'border-brand-500');
-            }, false);
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                dropZone.classList.remove('bg-brand-600/10', 'border-brand-500');
-            }, false);
-        });
-
-        dropZone.addEventListener('drop', (e) => {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-
-            if (files && files.length > 0) {
-                const file = files[0];
-                if (file.type.startsWith('video/')) {
-                    loadVideoFile(file);
-                } else {
-                    alert('동영상 파일만 업로드할 수 있습니다.');
-                }
-            }
-        });
-
         function loadVideoFile(file) {
             state.videoFile = file;
-            videoEl.src = URL.createObjectURL(file);
+            if (currentVideoBlobUrl) {
+                URL.revokeObjectURL(currentVideoBlobUrl);
+            }
+            currentVideoBlobUrl = URL.createObjectURL(file);
+            videoEl.src = currentVideoBlobUrl;
             videoEl.load();
 
             videoEl.onloadedmetadata = () => {
                 state.videoDuration = videoEl.duration;
-                state.clips = [{ id: Date.now(), start: 0, end: videoEl.duration }];
-                state.selectedClipId = null;
-
+                state.trimStart = 0;
+                state.trimEnd = videoEl.duration;
+                
+                document.getElementById('trimStart').value = 0;
+                document.getElementById('trimEnd').value = videoEl.duration.toFixed(1);
+                
                 updateCanvasDimensions();
                 emptyState.classList.add('hidden');
                 canvasWrapper.classList.remove('hidden');
                 playerControlBar.classList.remove('hidden');
                 timelineContainer.classList.remove('hidden');
 
+                generateWaveform();
                 pushState();
                 updateTimelineClips();
                 renderCanvasFrame();
             };
         }
+
+        async function generateWaveform() {
+            try {
+                const response = await fetch(videoEl.src);
+                const arrayBuffer = await response.arrayBuffer();
+                const tempAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const audioBuffer = await tempAudioCtx.decodeAudioData(arrayBuffer);
+                
+                const rawData = audioBuffer.getChannelData(0);
+                const samples = 200;
+                const blockSize = Math.floor(rawData.length / samples);
+                const filteredData = [];
+                for (let i = 0; i < samples; i++) {
+                    let blockStart = blockSize * i;
+                    let sum = 0;
+                    for (let j = 0; j < blockSize; j++) {
+                        sum = sum + Math.abs(rawData[blockStart + j]);
+                    }
+                    filteredData.push(sum / blockSize);
+                }
+
+                const waveCanvas = document.getElementById('waveformCanvas');
+                const wCtx = waveCanvas.getContext('2d');
+                waveCanvas.width = waveCanvas.offsetWidth || 800;
+                waveCanvas.height = waveCanvas.offsetHeight || 40;
+
+                wCtx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
+                wCtx.fillStyle = '#6366F1';
+                const barWidth = waveCanvas.width / samples;
+                
+                filteredData.forEach((val, i) => {
+                    const h = val * waveCanvas.height * 2.5;
+                    wCtx.fillRect(i * barWidth, (waveCanvas.height - h) / 2, barWidth - 1, h);
+                });
+            } catch(e) {}
+        }
+
+        document.getElementById('aspectRatioSelect').addEventListener('change', (e) => {
+            state.aspectRatio = e.target.value;
+            updateCanvasDimensions();
+            pushState();
+        });
 
         function updateCanvasDimensions() {
             let baseW = 1280, baseH = 720;
@@ -447,64 +887,199 @@
             const dropContainer = document.getElementById('dropZone');
             const maxW = dropContainer.clientWidth - 32;
             const maxH = dropContainer.clientHeight - 32;
+            
+            if (maxW <= 0 || maxH <= 0) return;
+
             const scale = Math.min(maxW / baseW, maxH / baseH, 1.0);
 
-            canvas.style.width = `${Math.max(200, baseW * scale)}px`;
-            canvas.style.height = `${Math.max(150, baseH * scale)}px`;
+            canvas.style.width = `${Math.round(baseW * scale)}px`;
+            canvas.style.height = `${Math.round(baseH * scale)}px`;
         }
 
-        // Render Frame & Play Loop
-        function renderCanvasFrame() {
-            if (state.clips.length === 0) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+        function getSubBoundingBox(sub) {
+            ctx.save();
+            ctx.font = `${sub.fontSize}px "${sub.fontFamily}"`;
+            const lines = sub.text.split('\n');
+            let maxLineWidth = 0;
+            lines.forEach(line => {
+                const w = ctx.measureText(line).width;
+                if (w > maxLineWidth) maxLineWidth = w;
+            });
+            const lineHeight = sub.fontSize * 1.2;
+            const totalHeight = lineHeight * lines.length;
+            const bgWidth = maxLineWidth + 24;
+            const bgHeight = totalHeight + 12;
+            ctx.restore();
+
+            return {
+                left: sub.x - bgWidth / 2,
+                right: sub.x + bgWidth / 2,
+                top: sub.y - bgHeight / 2,
+                bottom: sub.y + bgHeight / 2,
+                bgWidth,
+                bgHeight,
+                lineHeight,
+                lines
+            };
+        }
+
+        let activeDragTarget = null;
+        let dragOffset = { x: 0, y: 0 };
+        let showSnapLine = false;
+
+        canvas.addEventListener('mousedown', (e) => {
+            initAudioContext();
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const mouseX = (e.clientX - rect.left) * scaleX;
+            const mouseY = (e.clientY - rect.top) * scaleY;
+
+            const activeSub = state.subtitles.find(s => {
+                if (videoEl.currentTime < s.start || videoEl.currentTime > s.end) return false;
+                const bbox = getSubBoundingBox(s);
+                return mouseX >= bbox.left && mouseX <= bbox.right && mouseY >= bbox.top && mouseY <= bbox.bottom;
+            });
+
+            if (activeSub) {
+                activeDragTarget = { type: 'sub', obj: activeSub };
+                dragOffset = { x: mouseX - activeSub.x, y: mouseY - activeSub.y };
+                selectSubtitle(activeSub.id);
                 return;
             }
 
-            let currentClip = state.clips.find(c => videoEl.currentTime >= c.start && videoEl.currentTime < c.end);
-            if (!currentClip && state.isPlaying) {
-                let nextClip = state.clips.find(c => c.start > videoEl.currentTime);
-                if (nextClip) {
-                    videoEl.currentTime = nextClip.start;
-                } else {
-                    videoEl.currentTime = state.clips[0].start;
-                    togglePlay();
+            if (state.overlayImg) {
+                const { x, y, width, height } = state.overlayPos;
+                if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height) {
+                    activeDragTarget = { type: 'overlay', obj: state.overlayPos };
+                    dragOffset = { x: mouseX - x, y: mouseY - y };
                 }
             }
+        });
 
+        window.addEventListener('mousemove', (e) => {
+            if (!activeDragTarget) return;
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let mouseX = (e.clientX - rect.left) * scaleX;
+            let mouseY = (e.clientY - rect.top) * scaleY;
+
+            let newX = mouseX - dragOffset.x;
+            let newY = mouseY - dragOffset.y;
+
+            showSnapLine = false;
+            if (Math.abs(newX - canvas.width / 2) < 15) {
+                newX = canvas.width / 2;
+                showSnapLine = true;
+            }
+
+            if (activeDragTarget.type === 'sub') {
+                activeDragTarget.obj.x = newX;
+                activeDragTarget.obj.y = newY;
+            } else if (activeDragTarget.type === 'overlay') {
+                activeDragTarget.obj.x = newX;
+                activeDragTarget.obj.y = newY;
+            }
+            renderCanvasFrame();
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (activeDragTarget) {
+                activeDragTarget = null;
+                showSnapLine = false;
+                pushState();
+                renderCanvasFrame();
+            }
+        });
+
+        function renderCanvasFrame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             if (videoEl.readyState >= 2) {
                 ctx.save();
-                ctx.filter = `brightness(${state.filters.brightness}%) contrast(${state.filters.contrast}%)`;
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate((state.rotation * Math.PI) / 180);
+                ctx.scale(state.flipH ? -1 : 1, 1);
+
+                ctx.filter = `brightness(${state.filters.brightness}%) contrast(${state.filters.contrast}%) saturate(${state.filters.saturate}%) grayscale(${state.filters.grayscale}%) blur(${state.filters.blur}px)`;
 
                 const vRatio = videoEl.videoWidth / videoEl.videoHeight;
                 let drawW = canvas.width, drawH = canvas.width / vRatio;
                 if (drawH < canvas.height) { drawH = canvas.height; drawW = canvas.height * vRatio; }
-                ctx.drawImage(videoEl, (canvas.width - drawW) / 2, (canvas.height - drawH) / 2, drawW, drawH);
+                ctx.drawImage(videoEl, -drawW / 2, -drawH / 2, drawW, drawH);
                 ctx.restore();
             }
 
-            // Draw Subtitles
+            if (state.overlayImg) {
+                const { x, y, width, height } = state.overlayPos;
+                ctx.drawImage(state.overlayImg, x, y, width, height);
+            }
+
             const currentTime = videoEl.currentTime;
             state.subtitles.forEach(sub => {
                 if (currentTime >= sub.start && currentTime <= sub.end) {
                     ctx.save();
-                    ctx.font = `32px "Noto Sans KR"`;
+                    ctx.font = `${sub.fontSize}px "${sub.fontFamily}"`;
                     ctx.textAlign = 'center';
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.strokeStyle = '#000000';
-                    ctx.lineWidth = 4;
-                    ctx.strokeText(sub.text, sub.x, sub.y);
-                    ctx.fillText(sub.text, sub.x, sub.y);
+                    ctx.textBaseline = 'middle';
+
+                    const bbox = getSubBoundingBox(sub);
+
+                    if (sub.bgColor !== 'transparent') {
+                        ctx.fillStyle = sub.bgColor;
+                        ctx.fillRect(bbox.left, bbox.top, bbox.bgWidth, bbox.bgHeight);
+                    }
+
+                    const startY = sub.y - ((bbox.lines.length - 1) * bbox.lineHeight) / 2;
+
+                    bbox.lines.forEach((line, index) => {
+                        const lineY = startY + (index * bbox.lineHeight);
+
+                        if (sub.strokeColor) {
+                            ctx.strokeStyle = sub.strokeColor;
+                            ctx.lineWidth = 4;
+                            ctx.strokeText(line, sub.x, lineY);
+                        }
+
+                        ctx.fillStyle = sub.textColor;
+                        ctx.fillText(line, sub.x, lineY);
+                    });
+
+                    if (sub.id === state.selectedSubId) {
+                        ctx.strokeStyle = '#6366F1';
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(bbox.left - 4, bbox.top - 4, bbox.bgWidth + 8, bbox.bgHeight + 8);
+                    }
+
                     ctx.restore();
                 }
             });
 
-            // Update Timeline UI
+            if (showSnapLine) {
+                ctx.strokeStyle = '#EF4444';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(canvas.width / 2, 0);
+                ctx.lineTo(canvas.width / 2, canvas.height);
+                ctx.stroke();
+            }
+
             if (state.videoDuration > 0) {
                 const progress = (videoEl.currentTime / state.videoDuration) * 100;
                 playhead.style.left = `${progress}%`;
                 timeDisplay.textContent = `${formatTime(videoEl.currentTime)} / ${formatTime(state.videoDuration)}`;
+
+                const scrollArea = document.getElementById('timelineScrollArea');
+                const playheadPosPx = (scrollArea.scrollWidth * progress) / 100;
+                if (playheadPosPx < scrollArea.scrollLeft || playheadPosPx > scrollArea.scrollLeft + scrollArea.clientWidth) {
+                    scrollArea.scrollLeft = playheadPosPx - scrollArea.clientWidth / 2;
+                }
+            }
+
+            if (videoEl.currentTime >= state.trimEnd && state.isPlaying) {
+                videoEl.currentTime = state.trimStart;
+                if (audioEl.src) audioEl.currentTime = state.trimStart;
             }
 
             if (state.isPlaying && !state.isExporting) {
@@ -512,138 +1087,544 @@
             }
         }
 
-        // Playback Logic
         playPauseBtn.addEventListener('click', togglePlay);
         function togglePlay() {
-            if (state.clips.length === 0) return;
+            initAudioContext();
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
 
             if (videoEl.paused) {
+                if (videoEl.currentTime < state.trimStart || videoEl.currentTime >= state.trimEnd) {
+                    videoEl.currentTime = state.trimStart;
+                    if (audioEl.src) audioEl.currentTime = state.trimStart;
+                }
                 videoEl.play();
+                if (audioEl.src) audioEl.play();
                 state.isPlaying = true;
                 playPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
                 requestAnimationFrame(renderCanvasFrame);
             } else {
                 videoEl.pause();
+                if (audioEl.src) audioEl.pause();
                 state.isPlaying = false;
                 playPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
             }
         }
 
-        // Split & Delete
-        document.getElementById('splitVideoBtn').addEventListener('click', splitCurrentClip);
-        function splitCurrentClip() {
-            const currentTime = videoEl.currentTime;
-            const targetIndex = state.clips.findIndex(c => currentTime > c.start && currentTime < c.end);
-
-            if (targetIndex !== -1) {
-                const target = state.clips[targetIndex];
-                const clip1 = { id: Date.now(), start: target.start, end: currentTime };
-                const clip2 = { id: Date.now() + 1, start: currentTime, end: target.end };
-
-                state.clips.splice(targetIndex, 1, clip1, clip2);
-                state.selectedClipId = clip2.id;
-
-                pushState();
-                updateTimelineClips();
-                renderCanvasFrame();
-            }
-        }
-
-        deleteClipBtn.addEventListener('click', deleteSelectedClip);
-        function deleteSelectedClip() {
-            if (!state.selectedClipId) return;
-
-            state.clips = state.clips.filter(c => c.id !== state.selectedClipId);
-            state.selectedClipId = null;
-
-            pushState();
-            updateTimelineClips();
+        document.getElementById('prevFrameBtn').addEventListener('click', () => {
+            videoEl.currentTime = Math.max(state.trimStart, videoEl.currentTime - (1 / 30));
             renderCanvasFrame();
-        }
-
-        function updateTimelineClips() {
-            const container = document.getElementById('videoClipsContainer');
-            deleteClipBtn.disabled = !state.selectedClipId;
-
-            container.innerHTML = state.clips.map(clip => {
-                const left = (clip.start / state.videoDuration) * 100;
-                const width = ((clip.end - clip.start) / state.videoDuration) * 100;
-                const isSelected = clip.id === state.selectedClipId;
-
-                return `
-                    <div onclick="selectClip(event, ${clip.id})" 
-                         class="absolute top-1 bottom-1 rounded border cursor-pointer flex items-center justify-between px-2 text-[10px] text-white transition ${isSelected ? 'bg-brand-600 border-white ring-2 ring-brand-500 z-10' : 'bg-brand-600/50 border-brand-400/50 hover:bg-brand-600/80'}" 
-                         style="left: ${left}%; width: ${width}%;">
-                        <span class="truncate"><i class="fa-solid fa-film"></i> ${clip.start.toFixed(1)}s~${clip.end.toFixed(1)}s</span>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        window.selectClip = function(e, id) {
-            e.stopPropagation();
-            state.selectedClipId = id;
-            updateTimelineClips();
-        };
-
-        timelineRuler.addEventListener('click', (e) => {
-            const rect = timelineRuler.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const pct = clickX / rect.width;
-            videoEl.currentTime = pct * state.videoDuration;
+        });
+        document.getElementById('nextFrameBtn').addEventListener('click', () => {
+            videoEl.currentTime = Math.min(state.trimEnd, videoEl.currentTime + (1 / 30));
             renderCanvasFrame();
         });
 
-        // Subtitles
-        document.getElementById('addSubtitleBtn').addEventListener('click', () => {
+        document.getElementById('timelineZoom').addEventListener('input', (e) => {
+            const zoomVal = parseInt(e.target.value) || 100;
+            const tracksWrapper = document.getElementById('timelineTracksWrapper');
+            const ruler = document.getElementById('timelineRuler');
+            tracksWrapper.style.width = `${zoomVal}%`;
+            ruler.style.width = `${zoomVal}%`;
+        });
+
+        const addSubtitleBtn = document.getElementById('addSubtitleBtn');
+        const addSubBtnText = document.getElementById('addSubBtnText');
+
+        addSubtitleBtn.addEventListener('click', () => {
             const text = document.getElementById('subTextInput').value.trim();
             if (!text) return;
 
-            state.subtitles.push({
-                id: Date.now(),
-                text: text,
-                start: parseFloat(document.getElementById('subStartInput').value) || 0,
-                end: parseFloat(document.getElementById('subEndInput').value) || 5,
-                x: state.canvasWidth / 2,
-                y: state.canvasHeight - 80
-            });
+            if (state.selectedSubId) {
+                const sub = state.subtitles.find(s => s.id === state.selectedSubId);
+                if (sub) {
+                    sub.text = text;
+                    sub.start = parseFloat(document.getElementById('subStartInput').value) || 0;
+                    sub.end = parseFloat(document.getElementById('subEndInput').value) || 5;
+                    sub.fontFamily = document.getElementById('subFontFamily').value;
+                    sub.fontSize = parseInt(document.getElementById('subFontSize').value) || 32;
+                    sub.textColor = document.getElementById('subTextColor').value;
+                    sub.strokeColor = document.getElementById('subStrokeColor').value;
+                    sub.bgColor = document.getElementById('subBgColor').value;
+                }
+            } else {
+                const newSub = {
+                    id: Date.now(),
+                    text: text,
+                    start: parseFloat(document.getElementById('subStartInput').value) || 0,
+                    end: parseFloat(document.getElementById('subEndInput').value) || 5,
+                    fontFamily: document.getElementById('subFontFamily').value,
+                    fontSize: parseInt(document.getElementById('subFontSize').value) || 32,
+                    textColor: document.getElementById('subTextColor').value,
+                    strokeColor: document.getElementById('subStrokeColor').value,
+                    bgColor: document.getElementById('subBgColor').value,
+                    x: state.canvasWidth / 2,
+                    y: state.canvasHeight - 80
+                };
+                state.subtitles.push(newSub);
+            }
 
             document.getElementById('subTextInput').value = '';
+            state.selectedSubId = null;
+            addSubBtnText.textContent = "자막 등록";
+
             pushState();
             renderSubtitlesList();
+            updateTimelineClips();
             renderCanvasFrame();
         });
 
         function renderSubtitlesList() {
             const listEl = document.getElementById('subtitlesList');
             document.getElementById('subCountBadge').textContent = `${state.subtitles.length}개`;
+            
             if (state.subtitles.length === 0) {
                 listEl.innerHTML = `<p class="text-xs text-gray-500 text-center py-4">등록된 자막이 없습니다.</p>`;
                 return;
             }
+
             listEl.innerHTML = state.subtitles.map(sub => `
-                <div class="bg-dark-900/80 p-2 rounded-lg border border-dark-600 flex items-center justify-between text-xs">
-                    <p class="text-white truncate">${sub.text} (${sub.start}s~${sub.end}s)</p>
+                <div class="bg-dark-900/80 p-2 rounded-lg border ${sub.id === state.selectedSubId ? 'border-brand-500' : 'border-dark-600'} flex items-center justify-between text-xs cursor-pointer" onclick="selectSubtitle(${sub.id})">
+                    <div class="truncate max-w-[170px]">
+                        <p class="text-white font-medium truncate">${sub.text.replace(/\n/g, ' ')}</p>
+                        <p class="text-[10px] text-gray-400">${sub.start}s ~ ${sub.end}s</p>
+                    </div>
+                    <button onclick="deleteSubtitle(event, ${sub.id})" class="text-red-400 hover:text-red-300 p-1">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
                 </div>
             `).join('');
         }
 
-        // Shortcuts
+        window.selectSubtitle = function(id) {
+            state.selectedSubId = id;
+            const sub = state.subtitles.find(s => s.id === id);
+            if (sub) {
+                document.getElementById('subTextInput').value = sub.text;
+                document.getElementById('subStartInput').value = sub.start;
+                document.getElementById('subEndInput').value = sub.end;
+                document.getElementById('subFontFamily').value = sub.fontFamily;
+                document.getElementById('subFontSize').value = sub.fontSize;
+                document.getElementById('subTextColor').value = sub.textColor;
+                document.getElementById('subStrokeColor').value = sub.strokeColor;
+                document.getElementById('subBgColor').value = sub.bgColor;
+                addSubBtnText.textContent = "자막 수정 완료";
+            }
+            renderSubtitlesList();
+            renderCanvasFrame();
+        };
+
+        window.deleteSubtitle = function(e, id) {
+            if (e) e.stopPropagation();
+            state.subtitles = state.subtitles.filter(s => s.id !== id);
+            if (state.selectedSubId === id) {
+                state.selectedSubId = null;
+                document.getElementById('subTextInput').value = '';
+                addSubBtnText.textContent = "자막 등록";
+            }
+            pushState();
+            renderSubtitlesList();
+            updateTimelineClips();
+            renderCanvasFrame();
+        };
+
+        document.getElementById('splitVideoBtn').addEventListener('click', () => {
+            const splitTime = videoEl.currentTime;
+            state.trimStart = splitTime;
+            document.getElementById('trimStart').value = splitTime.toFixed(1);
+            pushState();
+            updateTimelineClips();
+            renderCanvasFrame();
+        });
+
+        document.getElementById('applyTrimBtn').addEventListener('click', applyTrimCut);
+
+        function applyTrimCut() {
+            const start = state.trimStart;
+            const end = state.trimEnd;
+            const newDuration = end - start;
+
+            if (newDuration <= 0) return;
+
+            state.subtitles = state.subtitles
+                .filter(sub => sub.end > start && sub.start < end)
+                .map(sub => ({
+                    ...sub,
+                    start: Math.max(0, sub.start - start),
+                    end: Math.min(newDuration, sub.end - start)
+                }));
+
+            state.videoDuration = newDuration;
+            state.trimStart = 0;
+            state.trimEnd = newDuration;
+
+            videoEl.currentTime = start;
+            if (audioEl.src) audioEl.currentTime = start;
+
+            document.getElementById('trimStart').value = 0;
+            document.getElementById('trimEnd').value = newDuration.toFixed(1);
+
+            pushState();
+            renderSubtitlesList();
+            updateTimelineClips();
+            renderCanvasFrame();
+        }
+
+        document.getElementById('trimStart').addEventListener('change', (e) => {
+            let val = parseFloat(e.target.value) || 0;
+            val = Math.max(0, Math.min(val, state.trimEnd - 0.1));
+            state.trimStart = val;
+            e.target.value = val.toFixed(1);
+            if (videoEl.currentTime < val) videoEl.currentTime = val;
+            pushState();
+            updateTimelineClips();
+            renderCanvasFrame();
+        });
+
+        document.getElementById('trimEnd').addEventListener('change', (e) => {
+            let val = parseFloat(e.target.value) || state.videoDuration;
+            val = Math.min(state.videoDuration, Math.max(val, state.trimStart + 0.1));
+            state.trimEnd = val;
+            e.target.value = val.toFixed(1);
+            if (videoEl.currentTime > val) videoEl.currentTime = val;
+            pushState();
+            updateTimelineClips();
+            renderCanvasFrame();
+        });
+
+        let isPlayheadDragging = false;
+
+        function handleTimelineSeek(e) {
+            const rect = timelineRuler.getBoundingClientRect();
+            let clickX = e.clientX - rect.left;
+            clickX = Math.max(0, Math.min(clickX, rect.width));
+            const pct = clickX / rect.width;
+            const targetTime = pct * state.videoDuration;
+            videoEl.currentTime = targetTime;
+            if (audioEl.src) audioEl.currentTime = targetTime;
+            renderCanvasFrame();
+        }
+
+        timelineRuler.addEventListener('mousedown', (e) => {
+            isPlayheadDragging = true;
+            handleTimelineSeek(e);
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isPlayheadDragging) handleTimelineSeek(e);
+            if (activeSubDrag) handleSubClipDrag(e);
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isPlayheadDragging) isPlayheadDragging = false;
+            if (activeSubDrag) endSubClipDrag();
+        });
+
+        // Magnet Snapping (자석 스냅 구현)
+        let activeSubDrag = null;
+
+        window.startSubClipDrag = function(e, subId, handleType) {
+            e.stopPropagation();
+            activeSubDrag = { subId, handleType, startX: e.clientX };
+            selectSubtitle(subId);
+        };
+
+        function getSnapPoints(currentSubId) {
+            const points = [0, state.videoDuration, videoEl.currentTime, state.trimStart, state.trimEnd];
+            state.subtitles.forEach(s => {
+                if (s.id !== currentSubId) {
+                    points.push(s.start, s.end);
+                }
+            });
+            return points;
+        }
+
+        function handleSubClipDrag(e) {
+            if (!activeSubDrag || !state.videoDuration) return;
+            const sub = state.subtitles.find(s => s.id === activeSubDrag.subId);
+            if (!sub) return;
+
+            const rulerRect = timelineRuler.getBoundingClientRect();
+            const deltaPx = e.clientX - activeSubDrag.startX;
+            const deltaTime = (deltaPx / rulerRect.width) * state.videoDuration;
+            activeSubDrag.startX = e.clientX;
+
+            const snapThreshold = 0.3;
+            const snapTargets = getSnapPoints(sub.id);
+
+            if (activeSubDrag.handleType === 'move') {
+                const dur = sub.end - sub.start;
+                let newStart = Math.max(0, Math.min(state.videoDuration - dur, sub.start + deltaTime));
+                let newEnd = newStart + dur;
+
+                for (let p of snapTargets) {
+                    if (Math.abs(newStart - p) < snapThreshold) {
+                        newStart = p;
+                        newEnd = p + dur;
+                        break;
+                    } else if (Math.abs(newEnd - p) < snapThreshold) {
+                        newEnd = p;
+                        newStart = Math.max(0, p - dur);
+                        break;
+                    }
+                }
+
+                sub.start = newStart;
+                sub.end = newEnd;
+
+            } else if (activeSubDrag.handleType === 'left') {
+                let newStart = Math.max(0, Math.min(sub.end - 0.2, sub.start + deltaTime));
+                for (let p of snapTargets) {
+                    if (Math.abs(newStart - p) < snapThreshold) {
+                        newStart = p;
+                        break;
+                    }
+                }
+                sub.start = newStart;
+
+            } else if (activeSubDrag.handleType === 'right') {
+                let newEnd = Math.min(state.videoDuration, Math.max(sub.start + 0.2, sub.end + deltaTime));
+                for (let p of snapTargets) {
+                    if (Math.abs(newEnd - p) < snapThreshold) {
+                        newEnd = p;
+                        break;
+                    }
+                }
+                sub.end = newEnd;
+            }
+
+            if (state.selectedSubId === sub.id) {
+                document.getElementById('subStartInput').value = sub.start.toFixed(1);
+                document.getElementById('subEndInput').value = sub.end.toFixed(1);
+            }
+
+            updateTimelineClips();
+            renderCanvasFrame();
+        }
+
+        function endSubClipDrag() {
+            activeSubDrag = null;
+            pushState();
+        }
+
+        // Timeline Render
+        function updateTimelineClips() {
+            if (!state.videoDuration) return;
+
+            const videoClip = document.getElementById('videoTrackClip');
+            const trimStartPct = (state.trimStart / state.videoDuration) * 100;
+            const trimWidthPct = ((state.trimEnd - state.trimStart) / state.videoDuration) * 100;
+            videoClip.style.left = `${trimStartPct}%`;
+            videoClip.style.width = `${trimWidthPct}%`;
+
+            const subContainer = document.getElementById('subtitleClipsContainer');
+            subContainer.innerHTML = state.subtitles.map(sub => {
+                const left = (sub.start / state.videoDuration) * 100;
+                const width = ((sub.end - sub.start) / state.videoDuration) * 100;
+                const isSelected = sub.id === state.selectedSubId;
+                return `
+                    <div class="absolute top-1 bottom-1 bg-amber-500/40 border ${isSelected ? 'border-amber-200 shadow-md z-20' : 'border-amber-400 z-10'} rounded text-[10px] text-amber-200 px-1 truncate flex items-center justify-between cursor-move group" style="left: ${left}%; width: ${width}%;" onmousedown="startSubClipDrag(event, ${sub.id}, 'move')">
+                        <div class="w-1.5 h-full bg-amber-300/60 cursor-ew-resize absolute left-0 top-0 bottom-0 opacity-0 group-hover:opacity-100 transition" onmousedown="startSubClipDrag(event, ${sub.id}, 'left')"></div>
+                        <span class="truncate pointer-events-none px-1">${sub.text.replace(/\n/g, ' ')}</span>
+                        <div class="w-1.5 h-full bg-amber-300/60 cursor-ew-resize absolute right-0 top-0 bottom-0 opacity-0 group-hover:opacity-100 transition" onmousedown="startSubClipDrag(event, ${sub.id}, 'right')"></div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Filters
+        ['brightness', 'contrast', 'saturate', 'grayscale', 'blur'].forEach(f => {
+            const input = document.getElementById(`filter${f.charAt(0).toUpperCase() + f.slice(1)}`);
+            input.addEventListener('input', (e) => {
+                state.filters[f] = e.target.value;
+                document.getElementById(`val${f.charAt(0).toUpperCase() + f.slice(1)}`).textContent = `${e.target.value}${f === 'blur' ? 'px' : '%'}`;
+                renderCanvasFrame();
+            });
+            input.addEventListener('change', () => { pushState(); });
+        });
+
+        document.getElementById('resetFiltersBtn').addEventListener('click', () => {
+            state.filters = { brightness: 100, contrast: 100, saturate: 100, grayscale: 0, blur: 0 };
+            document.getElementById('filterBrightness').value = 100;
+            document.getElementById('valBrightness').textContent = '100%';
+            document.getElementById('filterContrast').value = 100;
+            document.getElementById('valContrast').textContent = '100%';
+            document.getElementById('filterSaturate').value = 100;
+            document.getElementById('valSaturate').textContent = '100%';
+            document.getElementById('filterGrayscale').value = 0;
+            document.getElementById('valGrayscale').textContent = '0%';
+            document.getElementById('filterBlur').value = 0;
+            document.getElementById('valBlur').textContent = '0px';
+            pushState();
+            renderCanvasFrame();
+        });
+
+        // Rotation & Flip & Speed Controls
+        document.getElementById('rotateBtn').addEventListener('click', () => {
+            state.rotation = (state.rotation + 90) % 360;
+            pushState();
+            renderCanvasFrame();
+        });
+
+        document.getElementById('flipHBtn').addEventListener('click', () => {
+            state.flipH = !state.flipH;
+            pushState();
+            renderCanvasFrame();
+        });
+
+        function setPlaybackRate(rate) {
+            state.playbackRate = rate;
+            videoEl.playbackRate = rate;
+            document.getElementById('speedSelect').value = rate;
+            document.getElementById('quickSpeedSelect').value = rate;
+            pushState();
+        }
+
+        document.getElementById('speedSelect').addEventListener('change', (e) => {
+            setPlaybackRate(parseFloat(e.target.value) || 1.0);
+        });
+
+        document.getElementById('quickSpeedSelect').addEventListener('change', (e) => {
+            setPlaybackRate(parseFloat(e.target.value) || 1.0);
+        });
+
+        // Audio & BGM Controls
+        document.getElementById('bgmFileInput').addEventListener('change', (e) => {
+            initAudioContext();
+            const file = e.target.files[0];
+            if (file) {
+                if (currentBgmBlobUrl) {
+                    URL.revokeObjectURL(currentBgmBlobUrl);
+                }
+                currentBgmBlobUrl = URL.createObjectURL(file);
+                audioEl.src = currentBgmBlobUrl;
+                audioEl.load();
+                document.getElementById('audioTrackClip').classList.remove('hidden');
+                pushState();
+            }
+        });
+
+        document.getElementById('videoVolume').addEventListener('input', (e) => {
+            initAudioContext();
+            const val = parseFloat(e.target.value) / 100;
+            state.videoVolume = val;
+            if (videoGainNode) videoGainNode.gain.value = val;
+            document.getElementById('valVideoVol').textContent = `${e.target.value}%`;
+        });
+        document.getElementById('videoVolume').addEventListener('change', () => pushState());
+
+        document.getElementById('bgmVolume').addEventListener('input', (e) => {
+            initAudioContext();
+            const val = parseFloat(e.target.value) / 100;
+            state.bgmVolume = val;
+            if (bgmGainNode) bgmGainNode.gain.value = val;
+            document.getElementById('valBgmVol').textContent = `${e.target.value}%`;
+        });
+        document.getElementById('bgmVolume').addEventListener('change', () => pushState());
+
+        // Overlay Controls
+        document.getElementById('overlayFileInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        state.overlayRawImg = img;
+                        state.overlayImg = img;
+                        state.overlayPos.width = img.width * (state.overlayPos.scale / 100);
+                        state.overlayPos.height = img.height * (state.overlayPos.scale / 100);
+                        document.getElementById('overlaySettings').classList.remove('hidden');
+                        pushState();
+                        renderCanvasFrame();
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('overlayScale').addEventListener('input', (e) => {
+            const scale = parseInt(e.target.value) || 100;
+            state.overlayPos.scale = scale;
+            if (state.overlayRawImg) {
+                state.overlayPos.width = state.overlayRawImg.width * (scale / 100);
+                state.overlayPos.height = state.overlayRawImg.height * (scale / 100);
+            }
+            renderCanvasFrame();
+        });
+        document.getElementById('overlayScale').addEventListener('change', () => pushState());
+
+        document.getElementById('removeOverlayBtn').addEventListener('click', () => {
+            state.overlayImg = null;
+            state.overlayRawImg = null;
+            document.getElementById('overlayFileInput').value = '';
+            document.getElementById('overlaySettings').classList.add('hidden');
+            pushState();
+            renderCanvasFrame();
+        });
+
+        // Project File Save & Import
+        document.getElementById('exportProjectBtn').addEventListener('click', () => {
+            const projectData = {
+                version: "1.0",
+                aspectRatio: state.aspectRatio,
+                trimStart: state.trimStart,
+                trimEnd: state.trimEnd,
+                rotation: state.rotation,
+                flipH: state.flipH,
+                playbackRate: state.playbackRate,
+                filters: state.filters,
+                subtitles: state.subtitles,
+                videoVolume: state.videoVolume,
+                bgmVolume: state.bgmVolume,
+                overlayPos: state.overlayPos
+            };
+            const jsonStr = JSON.stringify(projectData, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `StudioPro_Project_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        document.getElementById('importProjectInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        applyStateSnapshot(data);
+                        alert("프로젝트를 성공적으로 불러왔습니다.");
+                    } catch (err) {
+                        alert("올바르지 않은 프로젝트 파일입니다.");
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // Undo/Redo Controls
         document.getElementById('undoBtn').addEventListener('click', undo);
         document.getElementById('redoBtn').addEventListener('click', redo);
 
+        // Keyboard Shortcuts
         window.addEventListener('keydown', (e) => {
             if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
 
             if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
-            else if (e.code === 'Delete' || e.code === 'Backspace') { 
-                if (state.selectedClipId) { e.preventDefault(); deleteSelectedClip(); }
-            }
+            else if (e.code === 'ArrowLeft') { videoEl.currentTime = Math.max(state.trimStart, videoEl.currentTime - (1 / 30)); renderCanvasFrame(); }
+            else if (e.code === 'ArrowRight') { videoEl.currentTime = Math.min(state.trimEnd, videoEl.currentTime + (1 / 30)); renderCanvasFrame(); }
+            else if (e.code === 'Delete' && state.selectedSubId) { deleteSubtitle(e, state.selectedSubId); }
             else if (e.ctrlKey && e.code === 'KeyZ') { e.preventDefault(); undo(); }
             else if (e.ctrlKey && e.code === 'KeyY') { e.preventDefault(); redo(); }
         });
 
-        // Export System
+        // Real Video Export System with Resolution Options
         const exportModal = document.getElementById('exportModal');
         document.getElementById('openExportModalBtn').addEventListener('click', () => exportModal.classList.remove('hidden'));
         document.getElementById('closeExportModalBtn').addEventListener('click', () => exportModal.classList.add('hidden'));
@@ -652,13 +1633,13 @@
         document.getElementById('startExportBtn').addEventListener('click', startExportingVideo);
 
         async function startExportingVideo() {
-            if (state.clips.length === 0) return;
+            initAudioContext();
+            if (audioCtx && audioCtx.state === 'suspended') {
+                await audioCtx.resume();
+            }
 
             state.isExporting = true;
             if (state.isPlaying) togglePlay();
-
-            const format = document.getElementById('exportFormat').value;
-            const mimeType = format === 'mp4' ? 'video/mp4' : 'video/webm;codecs=vp9';
 
             const progressWrapper = document.getElementById('exportProgressWrapper');
             const progressBar = document.getElementById('exportProgressBar');
@@ -666,67 +1647,126 @@
             const statusText = document.getElementById('exportStatusText');
 
             progressWrapper.classList.remove('hidden');
-            statusText.textContent = 'MP4 인코딩 및 내보내기 준비 중...';
+            statusText.textContent = '선택 해상도로 스케일링 준비 중...';
 
-            const stream = canvas.captureStream(30);
-            const recordedChunks = [];
+            // 선택 해상도 높이값 가져오기 (480, 720, 1080, 2160 등)
+            const targetHeight = parseInt(document.getElementById('exportResolution').value) || 1080;
+            const originalWidth = state.canvasWidth;
+            const originalHeight = state.canvasHeight;
+            const aspectRatio = originalWidth / originalHeight;
+
+            // 선택된 해상도 비율대로 캔버스 크기 조정
+            const targetWidth = Math.round(targetHeight * aspectRatio);
             
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
+
+            const canvasStream = canvas.captureStream(30);
+            const combinedStream = new MediaStream();
+
+            canvasStream.getVideoTracks().forEach(track => combinedStream.addTrack(track));
+
+            if (audioDestinationNode) {
+                audioDestinationNode.stream.getAudioTracks().forEach(track => combinedStream.addTrack(track));
+            }
+
+            const format = document.getElementById('exportFormat').value;
+            let preferredTypes = [
+                'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
+                'video/mp4',
+                'video/webm;codecs=vp9,opus',
+                'video/webm'
+            ];
+
+            if (format === 'webm') {
+                preferredTypes = ['video/webm;codecs=vp9,opus', 'video/webm', 'video/mp4'];
+            }
+
+            let supportedMime = preferredTypes.find(type => MediaRecorder.isTypeSupported(type)) || '';
+
+            // 해상도 높이에 따라 적절한 비트레이트 산정 (예: 1080p -> 12Mbps, 4K -> 35Mbps)
+            const bitrate = Math.round((targetHeight / 1080) * 12000000);
+
+            const recordedChunks = [];
             let mediaRecorder;
+
             try {
-                mediaRecorder = new MediaRecorder(stream, { mimeType: mimeType });
-            } catch (err) {
-                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder = supportedMime ? new MediaRecorder(combinedStream, { mimeType: supportedMime, videoBitsPerSecond: bitrate }) : new MediaRecorder(combinedStream);
+            } catch (e) {
+                mediaRecorder = new MediaRecorder(combinedStream);
             }
 
             mediaRecorder.ondataavailable = (e) => {
-                if (e.data.size > 0) recordedChunks.push(e.data);
+                if (e.data && e.data.size > 0) recordedChunks.push(e.data);
             };
 
             mediaRecorder.onstop = () => {
-                const blob = new Blob(recordedChunks, { type: format === 'mp4' ? 'video/mp4' : 'video/webm' });
+                const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || 'video/mp4' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `StudioPro_Export_${Date.now()}.${format}`;
+                a.download = `StudioPro_Export_${targetHeight}p_${Date.now()}.${format === 'webm' ? 'webm' : 'mp4'}`;
                 a.click();
+                
+                setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+                combinedStream.getTracks().forEach(track => track.stop());
+
+                // 내보내기 완료 후 원래 캔버스 크기로 복원
+                updateCanvasDimensions();
+                renderCanvasFrame();
 
                 state.isExporting = false;
                 statusText.textContent = '내보내기 완료!';
                 setTimeout(() => exportModal.classList.add('hidden'), 1000);
             };
 
-            let currentClipIdx = 0;
-            videoEl.currentTime = state.clips[0].start;
+            videoEl.currentTime = state.trimStart;
+            if (audioEl.src) audioEl.currentTime = state.trimStart;
+
+            videoEl.play();
+            if (audioEl.src) audioEl.play();
             mediaRecorder.start();
 
-            const totalDuration = state.clips.reduce((acc, c) => acc + (c.end - c.start), 0);
-            let processedTime = 0;
+            const durationToRecord = state.trimEnd - state.trimStart;
 
-            const exportInterval = setInterval(() => {
-                let activeClip = state.clips[currentClipIdx];
+            function processFrame() {
+                if (!state.isExporting) return;
 
-                if (!activeClip || videoEl.currentTime >= activeClip.end) {
-                    processedTime += (activeClip ? (activeClip.end - activeClip.start) : 0);
-                    currentClipIdx++;
-
-                    if (currentClipIdx >= state.clips.length) {
-                        clearInterval(exportInterval);
-                        videoEl.pause();
-                        mediaRecorder.stop();
-                        return;
-                    }
-                    videoEl.currentTime = state.clips[currentClipIdx].start;
+                if (videoEl.currentTime >= state.trimEnd || videoEl.paused) {
+                    videoEl.pause();
+                    if (audioEl.src) audioEl.pause();
+                    if (mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+                    return;
                 }
 
-                videoEl.currentTime += 0.033;
                 renderCanvasFrame();
 
-                const currentProgress = processedTime + (videoEl.currentTime - state.clips[currentClipIdx].start);
-                const pct = Math.min(100, Math.floor((currentProgress / totalDuration) * 100));
+                const currentProgress = videoEl.currentTime - state.trimStart;
+                const pct = Math.min(100, Math.floor((currentProgress / durationToRecord) * 100));
                 progressBar.style.width = `${pct}%`;
                 percentText.textContent = `${pct}%`;
-            }, 33);
+                statusText.textContent = `${targetHeight}p 인코딩 진행 중... (${formatTime(videoEl.currentTime)})`;
+
+                if ('requestVideoFrameCallback' in videoEl) {
+                    videoEl.requestVideoFrameCallback(processFrame);
+                } else {
+                    setTimeout(processFrame, 30);
+                }
+            }
+
+            if ('requestVideoFrameCallback' in videoEl) {
+                videoEl.requestVideoFrameCallback(processFrame);
+            } else {
+                setTimeout(processFrame, 30);
+            }
         }
+
+        // Fullscreen
+        document.getElementById('fullscreenBtn').addEventListener('click', () => {
+            if (!document.fullscreenElement) canvasWrapper.requestFullscreen();
+            else document.exitFullscreen();
+        });
 
         function formatTime(seconds) {
             const m = Math.floor(seconds / 60);
